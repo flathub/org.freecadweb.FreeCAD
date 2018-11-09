@@ -316,7 +316,7 @@ modules:
   - name: boost
     buildsystem: simple
     build-commands:
-      - ./bootstrap.sh --prefix=/app --with-libraries=filesystem,program_options,regex,signals,system,thread,python
+      - ./bootstrap.sh --prefix=/app --with-libraries=filesystem,program_options,regex,signals,system,thread,python,date_time
       - ./b2 -j $FLATPAK_BUILDER_N_JOBS install
     sources:
       - type: archive
@@ -405,6 +405,24 @@ modules:
         sha256: f829ee485c0edaf68c845999c38e16604cf333a7bfd44d0d598ef16ed430ac3f
       - type: patch
         path: patches/opencascade-vtk.patch
+
+  - name: IfcOpenShell
+    buildsystem: cmake-ninja
+    builddir: true
+    subdir: cmake
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=RelWithDebInfo
+      - -DOCC_INCLUDE_DIR=/app/include/opencascade
+      - -DOCC_LIBRARY_DIR=/app/lib
+      - -DCOLLADA_SUPPORT=OFF
+      - -DPYTHON_INCLUDE_DIR=/usr/include/python2.7
+      - -DPYTHON_LIBRARY=/usr/lib/libpython2.7.so
+    build-commands:
+      - sed -i 's|/usr|/app|g' ifcwrap/cmake_install.cmake
+    sources:
+      - type: git
+        url: https://github.com/IfcOpenShell/IfcOpenShell.git
+        commit: e64d8750e14e64a01f4a1b115f07bc6c9afe0b72
 
   - name: freecad
     buildsystem: cmake-ninja
