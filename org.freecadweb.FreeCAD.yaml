@@ -424,6 +424,68 @@ modules:
         url: https://github.com/IfcOpenShell/IfcOpenShell.git
         commit: e64d8750e14e64a01f4a1b115f07bc6c9afe0b72
 
+  - name: lapack
+    buildsystem: cmake
+    builddir: true
+    sources:
+      - type: archive
+        url: http://www.netlib.org/lapack/lapack-3.8.0.tar.gz
+        sha256: deb22cc4a6120bff72621155a9917f485f96ef8319ac074a7afbc68aab88bcf6
+
+  - name: arpack
+    buildsystem: cmake
+    sources:
+      - type: archive
+        url: https://github.com/opencollab/arpack-ng/archive/3.6.3.tar.gz
+        sha256: 64f3551e5a2f8497399d82af3076b6a33bf1bc95fc46bbcabe66442db366f453
+
+  - name: spooles
+    buildsystem: simple
+    sources:
+      - type: archive
+        url: http://www.netlib.org/linalg/spooles/spooles.2.2.tgz
+        sha256: a84559a0e987a1e423055ef4fdf3035d55b65bbe4bf915efaa1a35bef7f8c5dd
+        strip-components: 0
+      - type: patch
+        path: patches/spooles-gcc.patch
+    build-commands:
+      - make lib
+      - make -C MT/src
+      - install -Dt /app/lib *.a MT/src/*.a
+      - for f in $(find -name '*.h'); do install -Dt "/app/include/$(dirname "$f")" "$f"; done
+
+  - name: openblas
+    buildsystem: simple
+    sources:
+      - type: archive
+        url: https://github.com/xianyi/OpenBLAS/archive/v0.2.20.tar.gz
+        sha256: 5ef38b15d9c652985774869efd548b8e3e972e1e99475c673b25537ed7bcf394
+    build-commands:
+      - make
+      - make install PREFIX=/app
+
+  - name: calculix-ccx
+    buildsystem: simple
+    sources:
+      - type: archive
+        url: http://www.dhondt.de/ccx_2.14.src.tar.bz2
+        sha256: 59de9965d8f69141a34519101f7dd932c7d8d2be15480b31062b92512545fec4
+        strip-components: 2
+      - type: patch
+        path: patches/calculix-cxx-paths.patch
+    build-commands:
+      - make -C ccx_*/src -f Makefile_MT
+      - install -m0755 ccx_*/src/ccx_*_MT /app/bin/ccx
+
+  - name: gmsh
+    buildsystem: cmake
+    sources:
+      - type: archive
+        url: http://gmsh.info/src/gmsh-4.0.7-source.tgz
+        sha256: c6572320d0ffdf7d2488e113861bc4bd9c38a29f7fc5b67957f6fbcb63fbdbd5
+    cleanup:
+      - /share/doc
+
   - name: freecad
     buildsystem: cmake-ninja
     builddir: true
