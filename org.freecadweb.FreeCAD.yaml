@@ -442,8 +442,8 @@ modules:
   - name: spooles
     buildsystem: simple
     build-commands:
-      - make -j $FLATPAK_BUILDER_N_JOBS lib
-      - make -C MT/src -j $FLATPAK_BUILDER_N_JOBS
+      - make lib
+      - make -C MT/src
       - install -Dt /app/lib *.a MT/src/*.a
       - for f in $(find -name '*.h'); do install -Dt "/app/include/$(dirname "$f")" "$f"; done
     sources:
