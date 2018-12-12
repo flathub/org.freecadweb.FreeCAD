@@ -1,0 +1,27 @@
+diff -Naur CalculiX.orig/ccx_2.14/src/Makefile_MT CalculiX/ccx_2.14/src/Makefile_MT
+--- CalculiX.orig/ccx_2.14/src/Makefile_MT	2018-04-28 16:05:19.000000000 +0200
++++ CalculiX/ccx_2.14/src/Makefile_MT	2018-12-11 11:35:14.670845540 +0000
+@@ -1,5 +1,5 @@
+ 
+-CFLAGS = -Wall -O3 -fopenmp -I ../../../SPOOLES.2.2 -DARCH="Linux" -DSPOOLES -DARPACK -DMATRIXSTORAGE -DUSE_MT=1 
++CFLAGS = -Wall -O3 -fopenmp -DARCH="Linux" -DSPOOLES -DARPACK -DMATRIXSTORAGE -DUSE_MT=1 
+ FFLAGS = -Wall -O3 -fopenmp 
+ 
+ CC=cc
+@@ -18,12 +18,11 @@
+ OCCXC = $(SCCXC:.c=.o)
+ OCCXMAIN = $(SCCXMAIN:.c=.o)
+ 
+-DIR=../../../SPOOLES.2.2
+-
+ LIBS = \
+-       $(DIR)/MT/src/spoolesMT.a \
+-       $(DIR)/spooles.a \
+-       ../../../ARPACK/libarpack_INTEL.a \
++       /app/lib/spoolesMT.a \
++       /app/lib/spooles.a \
++       /app/lib/libarpack.a \
++       /app/lib/libopenblas.a \
+        -lpthread -lm
+ 
+ ccx_2.14_MT: $(OCCXMAIN) ccx_2.14_MT.a  $(LIBS)
