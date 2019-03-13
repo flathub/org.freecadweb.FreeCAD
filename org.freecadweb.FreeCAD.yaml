@@ -1,15 +1,11 @@
 app-id: org.freecadweb.FreeCAD
 branch: stable
 base: io.qt.qtwebkit.BaseApp
-base-version: '5.11'
+base-version: '5.12'
 runtime: org.kde.Platform
-runtime-version: '5.11'
+runtime-version: '5.12'
 sdk: org.kde.Sdk
-sdk-extensions:
-  - org.freedesktop.Sdk.Extension.gfortran-62
-build-options:
-  append-path: /usr/lib/sdk/gfortran-62/bin
-command: freecad
+command: FreeCAD
 finish-args:
   - --socket=wayland
   - --share=ipc
@@ -26,42 +22,11 @@ cleanup:
   - /share/man
   - '*.a'
   - '*.la'
+cleanup-commands: # https://github.com/flatpak/flatpak-builder/issues/233
+  - rm -rf /app/{include,lib/{cmake,mkspecs,pkgconfig}}
 modules:
-  - shared-modules/glu/glu-9.0.0.json # TODO: remove with next runtime
-
-  - name: gfortran
-    buildsystem: simple
-    build-commands: 
-      - /usr/lib/sdk/gfortran-62/install.sh
-
-  - name: llvm # pyside needs clang 5, TODO: remove with next runtime
-    buildsystem: cmake-ninja
-    builddir: true
-    build-options:
-      no-debuginfo: true
-    config-opts:
-      - -DLLVM_TARGETS_TO_BUILD=
-      - -DBUILD_SHARED_LIBS=ON
-    cleanup:
-      - '*'
-    sources:
-      - type: archive
-        url: http://releases.llvm.org/6.0.1/llvm-6.0.1.src.tar.xz
-        sha256: b6d6c324f9c71494c0ccaf3dac1f16236d970002b42bb24a6c9e1634f7d0f4e2
-
-  - name: clang
-    buildsystem: cmake-ninja
-    builddir: true
-    build-options:
-      no-debuginfo: true
-    config-opts:
-      - -DBUILD_SHARED_LIBS=ON
-    cleanup:
-      - '*'
-    sources:
-      - type: archive
-        url: http://releases.llvm.org/6.0.1/cfe-6.0.1.src.tar.xz
-        sha256: 7c243f1485bddfdfedada3cd402ff4792ea82362ff91fbdac2dae67c6026b667
+  - shared-modules/glu/glu-9.0.0.json
+  - shared-modules/python2.7/python-2.7.15.json
 
   - name: pyside2
     buildsystem: simple
@@ -92,12 +57,11 @@ modules:
       - /bin
     sources:
       - type: archive
-        url: http://download.qt.io/official_releases/QtForPython/pyside2/PySide2-5.11.2-src/pyside-setup-everywhere-src-5.11.2.tar.xz
-        sha256: 18f572f1f832e476083d30fccabab167450f2a8cbe5cd9c6e6e4fa078ccb86c2
+        url: https://download.qt.io/official_releases/QtForPython/pyside2/PySide2-5.12.1-src/pyside-setup-everywhere-src-5.12.1.tar.xz
+        sha256: 6e26b6240b97558b8bf3c97810e950ef4121a03a1ebdecfb649992a505f18059
       - type: shell
         commands:
-          - sed -i 's|--include-paths=|--include-paths=/app/qt5include:/usr/include/c++/6.4.0:/usr/include/c++/6.4.0/x86_64-unknown-linux:|'
-            sources/pyside2/cmake/Macros/PySideModules.cmake
+          - sed -i 's|\(--include-paths=\)|\1/app/qt5include:|' sources/pyside2/cmake/Macros/PySideModules.cmake
 
   - name: swig
     config-opts:
@@ -190,8 +154,8 @@ modules:
       - /bin
     sources:
       - type: archive
-        url: https://support.hdfgroup.org/ftp/HDF5/current18/src/hdf5-1.8.20.tar.bz2
-        sha256: a4f2db7e0a078aa324f64e0216a80731731f73025367fa94d158c9b1d3fbdf6f
+        url: https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8/hdf5-1.8.21/src/hdf5-1.8.21.tar.bz2
+        sha256: e5b1b1dee44a64b795a91c3321ab7196d9e0871fe50d42969761794e3899f40d
 
   - name: med
     buildsystem: cmake-ninja
@@ -211,31 +175,68 @@ modules:
         url: https://downloads.sourceforge.net/project/spacenav/spacenav%20library%20%28SDK%29/libspnav%200.2.3/libspnav-0.2.3.tar.gz
         sha256: 7ae4d7bb7f6a5dda28b487891e01accc856311440f582299760dace6ee5f1f93
 
+  - name: boost
+    buildsystem: simple
+    build-commands:
+      - ./bootstrap.sh --prefix=/app --with-libraries=filesystem,program_options,regex,signals,system,thread,python,date_time
+      - ./b2 -j $FLATPAK_BUILDER_N_JOBS install
+    sources:
+      - type: archive
+        url: https://dl.bintray.com/boostorg/release/1.67.0/source/boost_1_67_0.tar.bz2
+        sha256: 2684c972994ee57fc5632e03bf044746f6eb45d4920c343937a465fd67a5adba
+
   - name: coin3d
+    buildsystem: cmake-ninja
+    builddir: true
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=RelWithDebInfo
     cleanup:
       - /bin
     sources:
       - type: archive
-        url: https://bitbucket.org/Coin3D/coin/downloads/Coin-3.1.3.tar.gz
-        sha256: 583478c581317862aa03a19f14c527c3888478a06284b9a46a0155fa5886d417
-      - type: patch
-        path: patches/coin3d-fixed-wrong-assignment.patch
-      - type: patch
-        path: patches/coin3d-gcc6-crash-fix.patch
+        url: https://bitbucket.org/Coin3D/coin/get/8e8337f61b05.tar.gz
+        sha256: 8319cfa699afac0e5f19054222c25a7ad655f018f7c3c7b53f626e7b167cb08e
+
+  - name: soqt
+    buildsystem: cmake-ninja
+    builddir: true
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=RelWithDebInfo
+      - -DSOQT_BUILD_DOCUMENTATION=OFF
+    post-install:
+      - sed -i '/Qt5/d' /app/lib/cmake/SoQt-1.6.0/soqt-config.cmake
+    sources:
+      - type: archive
+        dest: data
+        url: https://bitbucket.org/Coin3D/soanydata/get/f429a8af862816d781175af84850b12ac43797a3.tar.gz
+        sha256: f77ef2484e71a96d50693e354ad544cced88abd7adb389a9459f26e6c7844119
+      - type: archive
+        dest: src/Inventor/Qt/common
+        url: https://bitbucket.org/Coin3D/sogui/get/04d1d8732971d9681d60ddd1d0c2ddbb0549c131.tar.gz
+        sha256: a1994750414a16e285d4a08df64fedf98479bd826af19bb4b71f11c24118e95b
+      - type: archive
+        url: https://bitbucket.org/Coin3D/soqt/get/bef9d6df88b9bf3e8f6c51325da002342128aec7.tar.gz
+        sha256: ed1d0447bf6b394f8765372a15cb4be7e6651a508ed3435a3d21c75170c55a4e
       - type: shell
         commands:
-          - sed -i '/^prefix/c prefix="/app/"' bin/coin-config
-          - sed -i '/^#include "fonts\/freetype.h"$/i#include <cstdlib>\n#include <cmath>' src/fonts/freetype.cpp
-          - sed -i '/^#include <Inventor\/C\/basic.h>$/i#include <Inventor/C/errors/debugerror.h>' include/Inventor/SbBasic.h
+          - sed -i '/cpack/d' CMakeLists.txt
 
   - name: pivy
     buildsystem: simple
     build-commands:
-      - python2 setup.py install --prefix=/app --root=/
+      - python2 setup.py build
+      - python2 setup.py install --prefix=/app
+    build-options:
+      env:
+        PREFIX: /app
     sources:
       - type: archive
-        url: http://http.debian.net/debian/pool/main/p/pivy/pivy_0.5.0~v609hg.orig.tar.bz2
-        sha256: ae7fdd9b0654e189d56b96224c92fa39c224d31f8bd3574a1dbf5915e0c84a52
+        url: https://bitbucket.org/Coin3D/pivy/get/db2e64a4a8803f4fbbcb4e03efaf37e5f988bcec.tar.gz
+        sha256: 3fcf4d3351d05db15bdd4442b349e472600d1379a78bf534774d96149d392fde
+      - type: shell
+        commands:
+          - sed -i 's|QUIET|REQUIRED|g' CMakeLists.txt
+          - sed -i 's|-Iinterfaces|-Iinterfaces -I/app/include|' setup.py
 
   - name: numpy
     buildsystem: simple
@@ -312,16 +313,6 @@ modules:
       - type: archive
         url: https://files.pythonhosted.org/packages/a0/b0/a4e3241d2dee665fea11baec21389aec6886655cd4db7647ddf96c3fad15/python-dateutil-2.7.3.tar.gz
         sha256: e27001de32f627c22380a688bcc43ce83504a7bc5da472209b4c70f02829f0b8
-
-  - name: boost
-    buildsystem: simple
-    build-commands:
-      - ./bootstrap.sh --prefix=/app --with-libraries=filesystem,program_options,regex,signals,system,thread,python,date_time
-      - ./b2 -j $FLATPAK_BUILDER_N_JOBS install
-    sources:
-      - type: archive
-        url: https://dl.bintray.com/boostorg/release/1.67.0/source/boost_1_67_0.tar.bz2
-        sha256: 2684c972994ee57fc5632e03bf044746f6eb45d4920c343937a465fd67a5adba
 
   - name: geos
     buildsystem: cmake-ninja
@@ -415,14 +406,14 @@ modules:
       - -DOCC_INCLUDE_DIR=/app/include/opencascade
       - -DOCC_LIBRARY_DIR=/app/lib
       - -DCOLLADA_SUPPORT=OFF
-      - -DPYTHON_INCLUDE_DIR=/usr/include/python2.7
-      - -DPYTHON_LIBRARY=/usr/lib/libpython2.7.so
+      - -DPYTHON_INCLUDE_DIR=/app/include/python2.7
+      - -DPYTHON_LIBRARY=/app/lib/libpython2.7.so
     build-commands:
       - sed -i 's|/usr|/app|g' ifcwrap/cmake_install.cmake
     sources:
       - type: git
         url: https://github.com/IfcOpenShell/IfcOpenShell.git
-        commit: e64d8750e14e64a01f4a1b115f07bc6c9afe0b72
+        commit: e4fdfd2eb38048523ba5be99430fe7772f2dc2ed
 
   - name: lapack
     buildsystem: cmake
@@ -431,6 +422,8 @@ modules:
       - type: archive
         url: http://www.netlib.org/lapack/lapack-3.8.0.tar.gz
         sha256: deb22cc4a6120bff72621155a9917f485f96ef8319ac074a7afbc68aab88bcf6
+        mirror-urls:
+          - http://deb.debian.org/debian/pool/main/l/lapack/lapack_3.8.0.orig.tar.gz
 
   - name: arpack
     buildsystem: cmake
@@ -451,6 +444,8 @@ modules:
         url: http://www.netlib.org/linalg/spooles/spooles.2.2.tgz
         sha256: a84559a0e987a1e423055ef4fdf3035d55b65bbe4bf915efaa1a35bef7f8c5dd
         strip-components: 0
+        mirror-urls:
+          - http://deb.debian.org/debian/pool/main/s/spooles/spooles_2.2.orig.tar.gz
       - type: patch
         path: patches/spooles-gcc.patch
 
@@ -464,6 +459,20 @@ modules:
         url: https://github.com/xianyi/OpenBLAS/archive/v0.2.20.tar.gz
         sha256: 5ef38b15d9c652985774869efd548b8e3e972e1e99475c673b25537ed7bcf394
 
+  - name: gfortran-mods # https://gitlab.com/freedesktop-sdk/freedesktop-sdk/issues/684
+    buildsystem: simple
+    build-options:
+      no-debuginfo: true
+    build-commands:
+      - mkdir -p /app/gfortran-mods
+      - cp -vR lib/gcc/x86_64-pc-linux-gnu/*.*.*/finclude/* /app/gfortran-mods
+    cleanup:
+      - '*'
+    sources:
+      - type: archive
+        url: http://gfortran.meteodat.ch/download/x86_64/releases/gcc-8.3.0.tar.xz
+        sha256: 35fd6205252b32552dbb332d5903146c57217930951915758d5290543145aa03
+
   - name: calculix-ccx
     buildsystem: simple
     build-commands:
@@ -471,11 +480,13 @@ modules:
       - install -m0755 ccx_*/src/ccx_*_MT /app/bin/ccx
     sources:
       - type: archive
-        url: http://www.dhondt.de/ccx_2.14.src.tar.bz2
-        sha256: 59de9965d8f69141a34519101f7dd932c7d8d2be15480b31062b92512545fec4
-        strip-components: 2
+        url: http://www.dhondt.de/ccx_2.15.src.tar.bz2
+        sha256: bc7dba721935af51b60c1b5aa1529a420476fc6432a7bec5254f8dfabaeb8a34
       - type: patch
         path: patches/calculix-cxx-paths.patch
+      - type: shell
+        commands:
+          - sed -i 's|FFLAGS = |FFLAGS = -I/app/gfortran-mods |g' ccx_2.15/src/Makefile_MT
 
   - name: gmsh
     buildsystem: cmake-ninja
@@ -495,27 +506,24 @@ modules:
     config-opts:
       - -DCMAKE_BUILD_TYPE=RelWithDebInfo
       - -DCMAKE_INSTALL_PREFIX=/app/freecad
+      - -DCMAKE_PREFIX_PATH=/app
       - -DBUILD_QT5=ON
-      - -DCMAKE_INCLUDE_PATH=/app/include
-      - -DCMAKE_LIBRARY_PATH=/app/lib
       - -DCMAKE_CXX_FLAGS='-L/app/lib -pthread'
     post-install:
-      - rm -rf /app/{include,lib/cmake,lib/mkspecs,lib/pkgconfig} # io.qt.qtwebkit.BaseApp
-      - desktop-file-edit --set-key=Exec --set-value='freecad %F' --set-icon=org.freecadweb.FreeCAD --remove-key=Path ../package/debian/freecad.desktop
+      - desktop-file-edit --set-key=Exec --set-value='FreeCAD %F' --set-icon=org.freecadweb.FreeCAD --remove-key=Path ../package/debian/freecad.desktop
       - install -Dm644 ../package/debian/freecad.desktop /app/share/applications/org.freecadweb.FreeCAD.desktop
       - install -Dm644 ../package/debian/freecad.sharedmimeinfo /app/share/mime/packages/org.freecadweb.FreeCAD.xml
       - install -Dm644 ../src/Gui/Icons/freecad.svg /app/share/icons/hicolor/scalable/apps/org.freecadweb.FreeCAD.svg
       - install -Dm644 -t /app/share/metainfo ../org.freecadweb.FreeCAD.appdata.xml
-      - ln -s /app/freecad/bin/FreeCAD /app/bin/FreeCAD
       - ln -s /app/freecad/bin/FreeCADCmd /app/bin/FreeCADCmd
-      - install -D ../freecad.sh /app/bin/freecad
+      - install -D ../FreeCAD.sh /app/bin/FreeCAD
     cleanup:
       - /freecad/doc
     sources:
       - type: script
-        dest-filename: freecad.sh
+        dest-filename: FreeCAD.sh
         commands:
-          - exec FreeCAD -u ${XDG_CONFIG_HOME}/FreeCAD/user.conf -s ${XDG_CONFIG_HOME}/FreeCAD/system.cfg "$@"
+          - exec /app/freecad/bin/FreeCAD -u ${XDG_CONFIG_HOME}/FreeCAD/user.conf -s ${XDG_CONFIG_HOME}/FreeCAD/system.cfg "$@"
       - type: file
         path: org.freecadweb.FreeCAD.appdata.xml
       - type: git
@@ -523,7 +531,9 @@ modules:
         # branch: releases/FreeCAD-0-17
         commit: 549e8ec8070b6e3064d606010a26e8033d239a99
       - type: patch
-        path: patches/freecad-qt5.11.patch
+        paths:
+          - patches/freecad-qt5.11.patch
+          - patches/salomesmesh-gcc8.patch
       - type: shell
         commands:
           - sed -i 's|/usr|/app|g' cMake/FindOpenCasCade.cmake src/Gui/GraphvizView.cpp
