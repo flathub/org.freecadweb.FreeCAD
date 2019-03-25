@@ -497,7 +497,7 @@ modules:
         url: http://gmsh.info/src/gmsh-4.0.7-source.tgz
         sha256: c6572320d0ffdf7d2488e113861bc4bd9c38a29f7fc5b67957f6fbcb63fbdbd5
 
-  - name: freecad
+  - name: FreeCAD
     buildsystem: cmake-ninja
     builddir: true
     build-options:
@@ -508,13 +508,8 @@ modules:
       - -DCMAKE_INSTALL_PREFIX=/app/freecad
       - -DCMAKE_PREFIX_PATH=/app
       - -DBUILD_QT5=ON
-      - -DCMAKE_CXX_FLAGS='-L/app/lib -pthread'
     post-install:
-      - desktop-file-edit --set-key=Exec --set-value='FreeCAD %F' --set-icon=org.freecadweb.FreeCAD --remove-key=Path ../package/debian/freecad.desktop
-      - install -Dm644 ../package/debian/freecad.desktop /app/share/applications/org.freecadweb.FreeCAD.desktop
-      - install -Dm644 ../package/debian/freecad.sharedmimeinfo /app/share/mime/packages/org.freecadweb.FreeCAD.xml
-      - install -Dm644 ../src/Gui/Icons/freecad.svg /app/share/icons/hicolor/scalable/apps/org.freecadweb.FreeCAD.svg
-      - install -Dm644 -t /app/share/metainfo ../org.freecadweb.FreeCAD.appdata.xml
+      - mv /app/freecad/share/* /app/share
       - ln -s /app/freecad/bin/FreeCADCmd /app/bin/FreeCADCmd
       - install -D ../FreeCAD.sh /app/bin/FreeCAD
     cleanup:
@@ -524,16 +519,11 @@ modules:
         dest-filename: FreeCAD.sh
         commands:
           - exec /app/freecad/bin/FreeCAD -u ${XDG_CONFIG_HOME}/FreeCAD/user.conf -s ${XDG_CONFIG_HOME}/FreeCAD/system.cfg "$@"
-      - type: file
-        path: org.freecadweb.FreeCAD.appdata.xml
       - type: git
         url: https://github.com/FreeCAD/FreeCAD.git
-        # branch: releases/FreeCAD-0-17
-        commit: 549e8ec8070b6e3064d606010a26e8033d239a99
-      - type: patch
-        paths:
-          - patches/freecad-qt5.11.patch
-          - patches/salomesmesh-gcc8.patch
+        # branch: releases/FreeCAD-0-18
+        commit: 8ece48c70bb7438112aa0cccb892c2109ae53082
       - type: shell
         commands:
+          - sed -i '34i <release version=\"0.18\" date=\"2019-03-15\"/>' src/XDGData/org.freecadweb.FreeCAD.appdata.xml
           - sed -i 's|/usr|/app|g' cMake/FindOpenCasCade.cmake src/Gui/GraphvizView.cpp
