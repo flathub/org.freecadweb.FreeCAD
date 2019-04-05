@@ -522,8 +522,8 @@ modules:
       - type: git
         url: https://github.com/FreeCAD/FreeCAD.git
         # branch: releases/FreeCAD-0-18
-        commit: 8ece48c70bb7438112aa0cccb892c2109ae53082
+        commit: f7dccfaa909e5b9da26bf50c4a22ccca9bb10c40
+        tag: 0.18.1
       - type: shell
         commands:
-          - sed -i '34i <release version=\"0.18\" date=\"2019-03-15\"/>' src/XDGData/org.freecadweb.FreeCAD.appdata.xml
           - sed -i 's|/usr|/app|g' cMake/FindOpenCasCade.cmake src/Gui/GraphvizView.cpp
