@@ -521,9 +521,9 @@ modules:
           - exec /app/freecad/bin/FreeCAD -u ${XDG_CONFIG_HOME}/FreeCAD/user.conf -s ${XDG_CONFIG_HOME}/FreeCAD/system.cfg "$@"
       - type: git
         url: https://github.com/FreeCAD/FreeCAD.git
-        # branch: releases/FreeCAD-0-18
-        commit: f7dccfaa909e5b9da26bf50c4a22ccca9bb10c40
-        tag: 0.18.1
+        commit: dbb4cc6415bac848a294f03b80f65e888d531742
+        tag: '0.18.2'
       - type: shell
         commands:
+          - sed -i 's|@PACKAGE_VERSION@|0.18.2|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
           - sed -i 's|/usr|/app|g' cMake/FindOpenCasCade.cmake src/Gui/GraphvizView.cpp
