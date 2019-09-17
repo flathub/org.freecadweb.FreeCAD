@@ -315,6 +315,15 @@ modules:
         url: https://files.pythonhosted.org/packages/a0/b0/a4e3241d2dee665fea11baec21389aec6886655cd4db7647ddf96c3fad15/python-dateutil-2.7.3.tar.gz
         sha256: e27001de32f627c22380a688bcc43ce83504a7bc5da472209b4c70f02829f0b8
 
+  - name: python-pycollada
+    buildsystem: simple
+    build-commands:
+        - python2 setup.py install --prefix=/app --root=/
+    sources:
+        - type: archive
+          url: https://files.pythonhosted.org/packages/37/7d/70545d16fed218ce781f74def0cffcfdc3fe46d5c64dfe726b082befb83c/pycollada-0.6.tar.gz
+          sha256: fcd6f38fd981e350f9ec754d9671834017accd600e967d6d299a6cfdae5ba4f4
+
   - name: geos
     buildsystem: cmake-ninja
     builddir: true
