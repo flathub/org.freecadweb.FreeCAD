@@ -488,7 +488,7 @@ modules:
       - -DCMAKE_PREFIX_PATH=/app
       - -DBUILD_QT5=ON
       # PySide 5.14 workarounds
-      - -DPYSIDE2RCCBINARY=/app/bin/rcc
+      - -DPYSIDE2RCCBINARY=/app/bin/rcc-fix
       - -DPYSIDE2UICBINARY=/app/bin/uic
       - -DSHIBOKEN_INCLUDE_DIR=/app/include/shiboken2
       - -DSHIBOKEN_LIBRARY=shiboken2.cpython-37m-x86_64-linux-gnu
@@ -504,12 +504,16 @@ modules:
         dest-filename: FreeCAD.sh
         commands:
           - exec /app/freecad/bin/FreeCAD -u ${XDG_CONFIG_HOME}/FreeCAD/user.conf -s ${XDG_CONFIG_HOME}/FreeCAD/system.cfg "$@"
+      - type: script
+        dest-filename: rcc-fix.sh
+        commands:
+          - exec /app/bin/rcc -g python "$@"
       - type: git
         url: https://github.com/FreeCAD/FreeCAD.git
         # branch: FreeCAD-0-18
         commit: 783e1346c7a078f5265c3f0c6a927d09a8c1fe70
-
       - type: shell
         commands:
           - sed -i 's|@PACKAGE_VERSION@|0.18.4|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
           - sed -i 's|/usr|/app|g' cMake/FindOpenCasCade.cmake src/Gui/GraphvizView.cpp
+          - install -D rcc-fix.sh /app/bin/rcc-fix
