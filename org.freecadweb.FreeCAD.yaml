@@ -14,7 +14,6 @@ finish-args:
   - --device=dri
   - --share=network
   - --filesystem=host # needed to make file saving work
-  - --env=PYTHONPATH=/app/lib/python3.7/site-packages
 cleanup:
   - /include
   - /share/aclocal
@@ -43,7 +42,7 @@ modules:
         sha256: 7c7af33792de57255dbdc165c808e1f03a2520295c5922d9897aca8ad1be92b3
       - type: shell
         commands:
-          - mkdir -p /app/include/qt5tmp && cp -R /usr/include/Qt* /app/include/qt5tmp
+          - mkdir -p /app/include/qt5tmp && cp -R /usr/include/Qt* /app/include/qt5tmp # https://bugreports.qt.io/browse/PYSIDE-787
           - sed -i 's|\(--include-paths=\)|\1/app/include/qt5tmp:|' sources/pyside2/cmake/Macros/PySideModules.cmake
 
   - name: swig
@@ -177,8 +176,8 @@ modules:
       - /bin
     sources:
       - type: archive
-        url: https://github.com/coin3d/coin/releases/download/Coin-4.0.0/coin-4.0.0-src.zip
-        sha256: 33e3484d05067ab86450e286869ed45f2bbf24d140adaf5120511d8d42c65658
+        url: https://github.com/coin3d/coin/releases/download/Coin-4.0.0/coin-4.0.0-src.tar.gz
+        sha256: e4f4bd57804b8ed0e017424ad2e45c112912a928b83f86c89963df9015251476
 
   - name: soqt
     buildsystem: cmake-ninja
@@ -190,8 +189,8 @@ modules:
       - sed -i '/Qt5/d' /app/lib/cmake/SoQt-1.6.0/soqt-config.cmake
     sources:
       - type: archive
-        url: https://github.com/coin3d/soqt/releases/download/SoQt-1.6.0/soqt-1.6.0-src.zip
-        sha256: b32089ab207111d4f8676fc29535112de5266311c8df31552c21e265d5cf8a6f
+        url: https://github.com/coin3d/soqt/releases/download/SoQt-1.6.0/soqt-1.6.0-src.tar.gz
+        sha256: 9f535af59f07c907022815679681bd345c9dec2f408c74833f6b1b24bca40e1f
 
   - name: pivy
     buildsystem: simple
@@ -412,10 +411,10 @@ modules:
       - -DCMAKE_BUILD_TYPE=Release
     sources:
       - type: archive
-        url: http://www.netlib.org/lapack/lapack-3.8.0.tar.gz
+        url: http://deb.debian.org/debian/pool/main/l/lapack/lapack_3.8.0.orig.tar.gz
         sha256: deb22cc4a6120bff72621155a9917f485f96ef8319ac074a7afbc68aab88bcf6
         mirror-urls:
-          - http://deb.debian.org/debian/pool/main/l/lapack/lapack_3.8.0.orig.tar.gz
+          - http://www.netlib.org/lapack/lapack-3.8.0.tar.gz # can be slow
 
   - name: arpack
     buildsystem: cmake # fortran needs ninja 1.10
@@ -436,11 +435,11 @@ modules:
       - for f in $(find -name '*.h'); do install -Dt "/app/include/$(dirname "$f")" "$f"; done
     sources:
       - type: archive
-        url: http://www.netlib.org/linalg/spooles/spooles.2.2.tgz
+        url:  http://deb.debian.org/debian/pool/main/s/spooles/spooles_2.2.orig.tar.gz
         sha256: a84559a0e987a1e423055ef4fdf3035d55b65bbe4bf915efaa1a35bef7f8c5dd
         strip-components: 0
         mirror-urls:
-          - http://deb.debian.org/debian/pool/main/s/spooles/spooles_2.2.orig.tar.gz
+          - http://www.netlib.org/linalg/spooles/spooles.2.2.tgz # can be slow
       - type: patch
         path: patches/spooles-gcc.patch
 
@@ -487,9 +486,6 @@ modules:
       - -DCMAKE_INSTALL_DATAROOTDIR=/app/share
       - -DCMAKE_PREFIX_PATH=/app
       - -DBUILD_QT5=ON
-      # PySide 5.14 workarounds
-      - -DPYSIDE2RCCBINARY=/app/bin/rcc-fix
-      - -DPYSIDE2UICBINARY=/app/bin/uic
       - -DSHIBOKEN_INCLUDE_DIR=/app/include/shiboken2
       - -DSHIBOKEN_LIBRARY=shiboken2.cpython-37m-x86_64-linux-gnu
       - -DPYSIDE_INCLUDE_DIR=/app/include/PySide2
@@ -504,16 +500,13 @@ modules:
         dest-filename: FreeCAD.sh
         commands:
           - exec /app/freecad/bin/FreeCAD -u ${XDG_CONFIG_HOME}/FreeCAD/user.conf -s ${XDG_CONFIG_HOME}/FreeCAD/system.cfg "$@"
-      - type: script
-        dest-filename: rcc-fix.sh
-        commands:
-          - exec /app/bin/rcc -g python "$@"
       - type: git
         url: https://github.com/FreeCAD/FreeCAD.git
         # branch: FreeCAD-0-18
         commit: 783e1346c7a078f5265c3f0c6a927d09a8c1fe70
+      - type: patch
+        path: patches/freecad-pyside-5.14.patch
       - type: shell
         commands:
           - sed -i 's|@PACKAGE_VERSION@|0.18.4|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
           - sed -i 's|/usr|/app|g' cMake/FindOpenCasCade.cmake src/Gui/GraphvizView.cpp
-          - install -D rcc-fix.sh /app/bin/rcc-fix
