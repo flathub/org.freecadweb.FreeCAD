@@ -1,4 +1,5 @@
 app-id: org.freecadweb.FreeCAD
+default-branch: beta
 base: io.qt.qtwebkit.BaseApp
 base-version: '5.14'
 runtime: org.kde.Platform
@@ -6,7 +7,6 @@ runtime-version: '5.14'
 sdk: org.kde.Sdk
 command: FreeCAD
 desktop-file-name-prefix: "(beta) "
-branch: beta
 finish-args:
   - --socket=wayland
   - --env=QT_QPA_PLATFORM=xcb
@@ -505,9 +505,9 @@ modules:
       - type: git
         url: https://github.com/FreeCAD/FreeCAD.git
         # tag: 0.19_pre
-        # commit #22474 as built from master
-        commit: a44f8ffd427fa9b23b1f00dbf62d66cd152cd774
+        # commit #22492 as built from master
+        commit: fe3f1b51b7be58367d08c5bb0f9f9d292671bb39
       - type: shell
         commands:
-          - sed -i 's|@PACKAGE_VERSION@|0.19_pre-22474|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
+          - sed -i 's|@PACKAGE_VERSION@|0.19_pre-22492|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
           - sed -i 's|/usr|/app|g' cMake/FindOpenCasCade.cmake src/Gui/GraphvizView.cpp
