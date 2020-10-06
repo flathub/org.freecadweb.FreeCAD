@@ -1,9 +1,9 @@
 app-id: org.freecadweb.FreeCAD
 default-branch: stable
 base: io.qt.qtwebkit.BaseApp
-base-version: '5.14'
+base-version: '5.15'
 runtime: org.kde.Platform
-runtime-version: '5.14'
+runtime-version: '5.15'
 sdk: org.kde.Sdk
 command: FreeCAD
 finish-args:
@@ -39,8 +39,8 @@ modules:
       - /bin
     sources:
       - type: archive
-        url: https://download.qt.io/official_releases/QtForPython/pyside2/PySide2-5.14.2-src/pyside-setup-opensource-src-5.14.2.tar.xz
-        sha256: 7c7af33792de57255dbdc165c808e1f03a2520295c5922d9897aca8ad1be92b3
+        url: https://download.qt.io/official_releases/QtForPython/pyside2/PySide2-5.15.1-src/pyside-setup-opensource-src-5.15.1.tar.xz
+        sha256: f175c1d8813257904cf0efeb58e44f68d53b9916f73adaf9ce19514c0271c3fa
       - type: shell
         commands:
           - mkdir -p /app/include/qt5tmp && cp -R /usr/include/Qt* /app/include/qt5tmp # https://bugreports.qt.io/browse/PYSIDE-787
