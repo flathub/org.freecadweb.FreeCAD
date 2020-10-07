@@ -373,9 +373,9 @@ modules:
         paths:
           - patches/vtk-python-3.8.patch
           - patches/vtk-qt5.15.patch
+          - patches/vtk-gcc10.patch
       - type: shell
         commands: # gcc-10
-          - patch -d ThirdParty/exodusII/vtkexodusII -p1 -i patches/vtk-gcc10.patch
           - sed -e 's|REGEX MATCH \"\[3-9\]|REGEX MATCH \"[1-9][0-9]|' -i CMake/VTKGenerateExportHeader.cmake
 
   - name: opencascade
