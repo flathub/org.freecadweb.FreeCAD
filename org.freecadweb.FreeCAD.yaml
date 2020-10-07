@@ -369,6 +369,14 @@ modules:
       - type: archive
         url: https://www.vtk.org/files/release/8.2/VTK-8.2.0.tar.gz
         sha256: 34c3dc775261be5e45a8049155f7228b6bd668106c72a3c435d95730d17d57bb
+      - type: patch
+        paths:
+          - patches/vtk-python-3.8.patch
+          - patches/vtk-qt5.15.patch
+      - type: shell
+        commands: # gcc-10
+          - patch -d ThirdParty/exodusII/vtkexodusII -p1 -i patches/vtk-gcc10.patch
+          - sed -e 's|REGEX MATCH \"\[3-9\]|REGEX MATCH \"[1-9][0-9]|' -i CMake/VTKGenerateExportHeader.cmake
 
   - name: opencascade
     buildsystem: cmake-ninja
