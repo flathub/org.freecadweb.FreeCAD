@@ -501,9 +501,9 @@ modules:
       - -DCMAKE_PREFIX_PATH=/app
       - -DBUILD_QT5=ON
       - -DSHIBOKEN_INCLUDE_DIR=/app/include/shiboken2
-      - -DSHIBOKEN_LIBRARY=shiboken2.cpython-37m-x86_64-linux-gnu
+      - -DSHIBOKEN_LIBRARY=shiboken2.cpython-38m-x86_64-linux-gnu
       - -DPYSIDE_INCLUDE_DIR=/app/include/PySide2
-      - -DPYSIDE_LIBRARY=pyside2.cpython-37m-x86_64-linux-gnu
+      - -DPYSIDE_LIBRARY=pyside2.cpython-38m-x86_64-linux-gnu
     post-install:
       - ln -s /app/freecad/bin/FreeCADCmd /app/bin/FreeCADCmd
       - install -D ../FreeCAD.sh /app/bin/FreeCAD
