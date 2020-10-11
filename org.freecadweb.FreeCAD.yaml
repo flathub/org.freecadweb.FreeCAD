@@ -386,6 +386,7 @@ modules:
       - -DUSE_FREEIMAGE=ON
       - -DUSE_VTK=ON
       - -DUSE_TBB=ON
+      - -DBUILD_DOC_Overview=OFF
     cleanup:
       - /bin
     sources:
