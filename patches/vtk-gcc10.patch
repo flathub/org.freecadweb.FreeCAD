@@ -1,0 +1,22 @@
+diff -ur VTK-8.2.0/ThirdParty/exodusII/vtkexodusII/src/ex_create_par.c VTK-8.2.0_new/ThirdParty/exodusII/vtkexodusII/src/ex_create_par.c
+--- VTK-8.2.0/ThirdParty/exodusII/vtkexodusII/src/ex_create_par.c	2019-01-30 18:15:13.000000000 +0100
++++ VTK-8.2.0_new/ThirdParty/exodusII/vtkexodusII/src/ex_create_par.c	2020-10-07 04:28:07.692842603 +0200
+@@ -614,5 +614,5 @@
+  * Prevent warning in some versions of ranlib(1) because the object
+  * file has no symbols.
+  */
+-const char exodus_unused_symbol_dummy_1;
++const char exodus_unused_symbol_dummy_ex_create_par;
+ #endif
+Only in VTK-8.2.0_new/ThirdParty/exodusII/vtkexodusII/src: ex_create_par.c.orig
+diff -ur VTK-8.2.0/ThirdParty/exodusII/vtkexodusII/src/ex_open_par.c VTK-8.2.0_new/ThirdParty/exodusII/vtkexodusII/src/ex_open_par.c
+--- VTK-8.2.0/ThirdParty/exodusII/vtkexodusII/src/ex_open_par.c	2019-01-30 18:15:13.000000000 +0100
++++ VTK-8.2.0_new/ThirdParty/exodusII/vtkexodusII/src/ex_open_par.c	2020-10-07 04:28:07.692842603 +0200
+@@ -474,5 +474,5 @@
+  * Prevent warning in some versions of ranlib(1) because the object
+  * file has no symbols.
+  */
+-const char exodus_unused_symbol_dummy_1;
++const char exodus_unused_symbol_dummy_ex_open_par;
+ #endif
+Only in VTK-8.2.0_new/ThirdParty/exodusII/vtkexodusII/src: ex_open_par.c.orig
