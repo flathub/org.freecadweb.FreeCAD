@@ -1,13 +1,15 @@
-diff -Naur CalculiX.orig/ccx_2.15/src/Makefile_MT CalculiX/ccx_2.15/src/Makefile_MT
---- CalculiX.orig/ccx_2.15/src/Makefile_MT	2018-04-28 16:05:19.000000000 +0200
-+++ CalculiX/ccx_2.15/src/Makefile_MT	2018-12-11 11:35:14.670845540 +0000
-@@ -1,5 +1,5 @@
+diff -ur CalculiX/ccx_2.17/src/Makefile_MT CalculiX_new/ccx_2.17/src/Makefile_MT
+--- CalculiX/ccx_2.17/src/Makefile_MT	2020-07-23 21:41:38.507761972 +0200
++++ CalculiX_new/ccx_2.17/src/Makefile_MT	2020-10-12 04:00:16.010748092 +0200
+@@ -1,6 +1,6 @@
  
--CFLAGS = -Wall -O3 -fopenmp -I ../../../SPOOLES.2.2 -DARCH="Linux" -DSPOOLES -DARPACK -DMATRIXSTORAGE -DUSE_MT=1 
-+CFLAGS = -Wall -O3 -fopenmp -DARCH="Linux" -DSPOOLES -DARPACK -DMATRIXSTORAGE -DUSE_MT=1 
- FFLAGS = -Wall -O3 -fopenmp 
+-CFLAGS = -Wall -O2 -fopenmp -I ../../../SPOOLES.2.2 -DARCH="Linux" -DSPOOLES -DARPACK -DMATRIXSTORAGE -DUSE_MT=1 
+-FFLAGS = -Wall -O2 -fopenmp 
++CFLAGS = -Wall -O2 -fopenmp -DARCH="Linux" -DSPOOLES -DARPACK -DMATRIXSTORAGE -DUSE_MT=1 
++FFLAGS = -Wall -O2 -fallow-argument-mismatch
  
  CC=cc
+ FC=gfortran
 @@ -18,12 +18,11 @@
  OCCXC = $(SCCXC:.c=.o)
  OCCXMAIN = $(SCCXMAIN:.c=.o)
@@ -24,4 +26,4 @@ diff -Naur CalculiX.orig/ccx_2.15/src/Makefile_MT CalculiX/ccx_2.15/src/Makefile
 +       /app/lib/libopenblas.a \
         -lpthread -lm
  
- ccx_2.15_MT: $(OCCXMAIN) ccx_2.15_MT.a  $(LIBS)
+ ccx_2.17_MT: $(OCCXMAIN) ccx_2.17_MT.a  $(LIBS)
