@@ -15,6 +15,8 @@ finish-args:
   - --share=network
   - --filesystem=host # needed to make file saving work
   - --filesystem=xdg-run/gvfs # make GnomeVFS accessible
+  - --talk-name=org.freedesktop.Flatpak # to launch openscad
+  - --env=TMPDIR=/var/tmp
 cleanup:
   - /include
   - /share/aclocal
@@ -586,6 +588,7 @@ modules:
       - -DPYSIDE_INCLUDE_DIR=/app/include/PySide2
       - -DPYSIDE_LIBRARY=pyside2.cpython-38-x86_64-linux-gnu
     post-install:
+      - install -Dm755 ../openscad.sh ${FLATPAK_DEST}/bin/openscad
       - ln -s /app/freecad/bin/FreeCADCmd /app/bin/FreeCADCmd
       - install -D ../FreeCAD.sh /app/bin/FreeCAD
     cleanup:
@@ -601,6 +604,8 @@ modules:
         commit: 783e1346c7a078f5265c3f0c6a927d09a8c1fe70
       - type: patch
         path: patches/freecad-pyside-5.14.patch
+      - type: file
+        path: openscad.sh
       - type: shell
         commands:
           - sed -i 's|@PACKAGE_VERSION@|0.18.4|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
