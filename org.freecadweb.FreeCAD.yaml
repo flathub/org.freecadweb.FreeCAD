@@ -589,7 +589,7 @@ modules:
       - -DPYSIDE_INCLUDE_DIR=/app/include/PySide2
       - -DPYSIDE_LIBRARY=pyside2.cpython-38-x86_64-linux-gnu
     post-install:
-      - install -Dm755 openscad.sh ${FLATPAK_DEST}/bin/openscad
+      - install -Dm755 ../openscad.sh ${FLATPAK_DEST}/bin/openscad
       - ln -s /app/freecad/bin/FreeCADCmd /app/bin/FreeCADCmd
       - install -D ../FreeCAD.sh /app/bin/FreeCAD
     cleanup:
