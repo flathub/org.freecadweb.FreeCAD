@@ -178,8 +178,8 @@ modules:
       - /bin
     sources:
       - type: archive
-        url: https://github.com/coin3d/coin/releases/download/Coin-4.0.0/coin-4.0.0-src.tar.gz
-        sha256: e4f4bd57804b8ed0e017424ad2e45c112912a928b83f86c89963df9015251476
+        url: http://deb.debian.org/debian/pool/main/c/coin3/coin3_4.0.0~CMake~6f54f1602475+ds1.orig.tar.bz2
+        sha256: 39810ca5daffa4e4d426b0deb99198e1cc5e64bf17fd0eeb5e6cc8febb09a04f
 
   - name: soqt
     buildsystem: cmake-ninja
