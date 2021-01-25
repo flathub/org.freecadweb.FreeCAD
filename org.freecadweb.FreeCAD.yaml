@@ -601,8 +601,7 @@ modules:
       - type: git
         url: https://github.com/FreeCAD/FreeCAD.git
         # branch: FreeCAD-0-18
-        commit: 734202bc810bf61bd6f66bdc060e6951bd0d134d
-        tag: '0.18.5'
+        commit: 5e51288bf6a3d62fa70e36d75b270ddecfd7ab09
       - type: patch
         path: patches/freecad-pyside-5.14.patch
       - type: file
