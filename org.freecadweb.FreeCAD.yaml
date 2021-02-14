@@ -602,11 +602,11 @@ modules:
       - type: git
         url: https://github.com/FreeCAD/FreeCAD.git
         # tag: 0.19_pre
-        # commit #23258 as built from master
-        commit: a3fb14ff9d077a1f8de5d4978f6cf35250530f49
+        # commit #24054 as built from master
+        commit: ed873038025277f220dfaa058599a0dfbb435835
       - type: file
         path: openscad.sh
       - type: shell
         commands:
-          - sed -i 's|@PACKAGE_VERSION@|0.19_pre-23258|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
+          - sed -i 's|@PACKAGE_VERSION@|0.19_pre-24054|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
           - sed -i 's|/usr|/app|g' cMake/FindOpenCasCade.cmake src/Gui/GraphvizView.cpp
