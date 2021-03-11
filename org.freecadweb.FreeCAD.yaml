@@ -601,14 +601,14 @@ modules:
       - type: git
         url: https://github.com/FreeCAD/FreeCAD.git
         # branch: FreeCAD-0-18
-        commit: 5e51288bf6a3d62fa70e36d75b270ddecfd7ab09
+        commit: b7b014ce43da53d0405177e3ea6b31e4a94ab392
       - type: patch
         path: patches/freecad-pyside-5.14.patch
       - type: file
         path: openscad.sh
       - type: shell
         commands:
-          - sed -i 's|@PACKAGE_VERSION@|0.18.5|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
+          - sed -i 's|@PACKAGE_VERSION@|0.18.6|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
           - sed -i 's|/usr|/app|g' cMake/FindOpenCasCade.cmake src/Gui/GraphvizView.cpp
           # fixes from Arch
           - sed -i 's/interp->modules/PyImport_GetModuleDict()/g' src/Base/swigpyrun.inl
