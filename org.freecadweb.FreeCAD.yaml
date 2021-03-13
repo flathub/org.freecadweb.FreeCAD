@@ -600,19 +600,11 @@ modules:
           - exec /app/freecad/bin/FreeCAD -u ${XDG_CONFIG_HOME}/FreeCAD/user.conf -s ${XDG_CONFIG_HOME}/FreeCAD/system.cfg "$@"
       - type: git
         url: https://github.com/FreeCAD/FreeCAD.git
-        # branch: FreeCAD-0-18
-        commit: b7b014ce43da53d0405177e3ea6b31e4a94ab392
-      - type: patch
-        path: patches/freecad-pyside-5.14.patch
+        tag: '0.19'
+        commit: d29fd7d9cb9fb280a1eb47f55e3c73c46d637ba2
       - type: file
         path: openscad.sh
       - type: shell
         commands:
-          - sed -i 's|@PACKAGE_VERSION@|0.18.6|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
+          - sed -i 's|@PACKAGE_VERSION@|0.19|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
           - sed -i 's|/usr|/app|g' cMake/FindOpenCasCade.cmake src/Gui/GraphvizView.cpp
-          # fixes from Arch
-          - sed -i 's/interp->modules/PyImport_GetModuleDict()/g' src/Base/swigpyrun.inl
-          - sed -i 's/\(.*\)include <QPainter>$/&\n\1include <QPainterPath>/' src/Mod/Image/Gui/OpenGLImageBox.cpp
-          - sed -i 's/SHIBOKEN_MICRO_VERSION/0/g' src/Gui/WidgetFactory.cpp
-          - find src ! -wholename "*/Mod/Sketcher/*" ! -wholename "*/Mod/PartDesign/*" -name "*.cpp" -type f -exec sed -i '1i using namespace std;' {} \;
-          - sed -i '1i \#include <Inventor\/SbByteBuffer.h>' src/Gui/Quarter/QuarterWidget.cpp
