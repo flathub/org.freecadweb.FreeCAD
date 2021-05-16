@@ -468,6 +468,8 @@ modules:
         sha256: f829ee485c0edaf68c845999c38e16604cf333a7bfd44d0d598ef16ed430ac3f
       - type: patch
         path: patches/opencascade-vtk.patch
+      - type: patch
+        path: patches/opencascade-build.patch
 
   - name: IfcOpenShell
     buildsystem: cmake-ninja
@@ -600,11 +602,11 @@ modules:
           - exec /app/freecad/bin/FreeCAD -u ${XDG_CONFIG_HOME}/FreeCAD/user.conf -s ${XDG_CONFIG_HOME}/FreeCAD/system.cfg "$@"
       - type: git
         url: https://github.com/FreeCAD/FreeCAD.git
-        tag: '0.19.1'
-        commit: a88db11e0a908f6e38f92bfc5187b13ebe470438
+        tag: '0.19.2'
+        commit: 7b5e18a0759de778b74d3a5c17eba9cb815035ac
       - type: file
         path: openscad.sh
       - type: shell
         commands:
-          - sed -i 's|@PACKAGE_VERSION@|0.19.1|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
+          - sed -i 's|@PACKAGE_VERSION@|0.19.2|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
           - sed -i 's|/usr|/app|g' cMake/FindOpenCasCade.cmake src/Gui/GraphvizView.cpp
