@@ -602,6 +602,7 @@ modules:
       - install -Dm755 ../openscad.sh ${FLATPAK_DEST}/bin/openscad
       - ln -s /app/freecad/bin/FreeCADCmd /app/bin/FreeCADCmd
       - install -D ../FreeCAD.sh /app/bin/FreeCAD
+      - cp /usr/bin/assistant /app/bin
     sources:
       - type: script
         dest-filename: FreeCAD.sh
@@ -613,6 +614,8 @@ modules:
         commit: 7b5e18a0759de778b74d3a5c17eba9cb815035ac
       - type: file
         path: openscad.sh
+      - type: patch
+        path: patches/freecad-assistant-path.patch
       - type: shell
         commands:
           - sed -i 's|@PACKAGE_VERSION@|0.19.2|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
