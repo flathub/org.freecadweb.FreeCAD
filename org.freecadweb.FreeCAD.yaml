@@ -602,6 +602,8 @@ modules:
       - install -Dm755 ../openscad.sh ${FLATPAK_DEST}/bin/openscad
       - ln -s /app/freecad/bin/FreeCADCmd /app/bin/FreeCADCmd
       - install -D ../FreeCAD.sh /app/bin/FreeCAD
+      # we need to copy QAssistant from the platfor before it gets cleaned up
+      # We'll need a patch too, see below
       - cp /usr/bin/assistant /app/bin
     sources:
       - type: script
@@ -614,9 +616,14 @@ modules:
         commit: 7b5e18a0759de778b74d3a5c17eba9cb815035ac
       - type: file
         path: openscad.sh
+      # we need this patch so that FreeCAD can find QAssistant
       - type: patch
         path: patches/freecad-assistant-path.patch
       - type: shell
         commands:
           - sed -i 's|@PACKAGE_VERSION@|0.19.2|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
           - sed -i 's|/usr|/app|g' cMake/FindOpenCasCade.cmake src/Gui/GraphvizView.cpp
+          # This sqlite3 command will tell QAssistant that the cache dir
+          # is NOT relative to the collection. Otherwise QAssisstant tries
+          # to create the cache dir in /app/share/doc/ that is read only.
+          - sqlite3 src/Doc/freecad.qhc "UPDATE SettingsTable SET Value='0' WHERE Key='CacheDirRelativeToCollection';"
