@@ -608,7 +608,9 @@ modules:
       - install -Dm755 ../openscad.sh ${FLATPAK_DEST}/bin/openscad
       - ln -s /app/freecad/bin/FreeCADCmd /app/bin/FreeCADCmd
       - install -D ../FreeCAD.sh /app/bin/FreeCAD
-      # we need to copy QAssistant from the platfor before it gets cleaned up
+      # The mimetype icon to be exported.
+      - install -Dm644 ../src/Gui/Icons/freecad-doc.svg ${FLATPAK_DEST}/share/icons/hicolor/scalable/mimetypes/${FLATPAK_ID}.application-x-extension-fcstd.svg
+      # we need to copy QAssistant from the platform before it gets cleaned up
       # We'll need a patch too, see below
       - cp /usr/bin/assistant /app/bin
     sources:
@@ -629,6 +631,8 @@ modules:
         commands:
           - sed -i 's|@PACKAGE_VERSION@|0.19.2|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
           - sed -i 's|/usr|/app|g' cMake/FindOpenCasCade.cmake src/Gui/GraphvizView.cpp
+          # We need to properly set the icon name
+          - sed -i 's|name="org.freecadweb.FreeCAD"|name="org.freecadweb.FreeCAD.application-x-extension-fcstd"|' src/XDGData/org.freecadweb.FreeCAD.xml
           # This sqlite3 command will tell QAssistant that the cache dir
           # is NOT relative to the collection. Otherwise QAssisstant tries
           # to create the cache dir in /app/share/doc/ that is read only.
