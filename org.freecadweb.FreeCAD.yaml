@@ -7,7 +7,6 @@ sdk: org.kde.Sdk
 command: FreeCAD
 finish-args:
   - --socket=wayland
-  - --env=QT_QPA_PLATFORM=xcb
   - --share=ipc
   - --socket=x11
   - --device=dri
