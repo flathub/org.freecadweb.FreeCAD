@@ -18,10 +18,15 @@ finish-args:
   - --filesystem=xdg-run/gvfs # make GnomeVFS accessible
   - --talk-name=org.freedesktop.Flatpak # to launch openscad
   - --env=TMPDIR=/var/tmp
+add-extensions:
+  org.freecadweb.FreeCAD.Manual:
+    directory: share/doc/FreeCAD
+    bundle: true
+    no-autodownload: true
+    autodelete: true
 cleanup:
   - /include
   - /share/aclocal
-  - /share/doc
   - /share/cmake
   - /share/man
   - '*.a'
@@ -41,8 +46,8 @@ modules:
       - /bin
     sources:
       - type: archive
-        url: https://download.qt.io/official_releases/QtForPython/pyside2/PySide2-5.15.1-src/pyside-setup-opensource-src-5.15.1.tar.xz
-        sha256: f175c1d8813257904cf0efeb58e44f68d53b9916f73adaf9ce19514c0271c3fa
+        url: https://download.qt.io/official_releases/QtForPython/pyside2/PySide2-5.15.2-src/pyside-setup-opensource-src-5.15.2.tar.xz
+        sha256: b306504b0b8037079a8eab772ee774b9e877a2d84bab2dbefbe4fa6f83941418
       - type: shell
         commands:
           - mkdir -p /app/include/qt5tmp && cp -R /usr/include/Qt* /app/include/qt5tmp # https://bugreports.qt.io/browse/PYSIDE-787
@@ -59,6 +64,8 @@ modules:
         sha256: d53be9730d8d58a16bf0cbd1f8ac0c0c3e1090573168bfa151b01eb47fa906fc
 
   - name: libXmu
+    cleanup:
+      - /share/doc
     sources:
       - type: archive
         url: https://www.x.org/archive//individual/lib/libXmu-1.1.2.tar.bz2
@@ -117,6 +124,7 @@ modules:
       - -DCMAKE_BUILD_TYPE=Release
     cleanup:
       - /bin
+      - /share/doc
     sources:
       - type: archive
         url: https://archive.apache.org/dist/xerces/c/3/sources/xerces-c-3.2.2.tar.xz
@@ -149,6 +157,7 @@ modules:
       - -DCMAKE_BUILD_TYPE=Release
     cleanup:
       - /bin
+      - /share/doc
     sources:
       - type: archive
         url: http://files.salome-platform.org/Salome/other/med-3.3.1.tar.gz
@@ -439,6 +448,7 @@ modules:
       - -DCMAKE_BUILD_TYPE=Release
     cleanup:
       - /bin
+      - /share/doc
     sources:
       - type: archive
         url: https://www.vtk.org/files/release/8.2/VTK-8.2.0.tar.gz
@@ -469,6 +479,8 @@ modules:
         sha256: f829ee485c0edaf68c845999c38e16604cf333a7bfd44d0d598ef16ed430ac3f
       - type: patch
         path: patches/opencascade-vtk.patch
+      - type: patch
+        path: patches/opencascade-build.patch
 
   - name: IfcOpenShell
     buildsystem: cmake-ninja
@@ -575,6 +587,10 @@ modules:
         url: https://files.pythonhosted.org/packages/a3/58/35da89ee790598a0700ea49b2a66594140f44dec458c07e8e3d4979137fc/ply-3.11-py2.py3-none-any.whl
         sha256: 096f9b8350b65ebd2fd1346b12452efe5b9607f7482813ffca50c22722a807ce
 
+  # For the FEM workbench.
+  - python3-pyyaml.json
+  - python3-Pillow.json
+
   - name: FreeCAD
     buildsystem: cmake-ninja
     builddir: true
@@ -592,8 +608,9 @@ modules:
       - install -Dm755 ../openscad.sh ${FLATPAK_DEST}/bin/openscad
       - ln -s /app/freecad/bin/FreeCADCmd /app/bin/FreeCADCmd
       - install -D ../FreeCAD.sh /app/bin/FreeCAD
-    cleanup:
-      - /freecad/doc
+      # we need to copy QAssistant from the platfor before it gets cleaned up
+      # We'll need a patch too, see below
+      - cp /usr/bin/assistant /app/bin
     sources:
       - type: script
         dest-filename: FreeCAD.sh
@@ -601,11 +618,18 @@ modules:
           - exec /app/freecad/bin/FreeCAD -u ${XDG_CONFIG_HOME}/FreeCAD/user.conf -s ${XDG_CONFIG_HOME}/FreeCAD/system.cfg "$@"
       - type: git
         url: https://github.com/FreeCAD/FreeCAD.git
-        tag: 0.19
-        commit: d29fd7d9cb9fb280a1eb47f55e3c73c46d637ba2
+        tag: '0.19.2'
+        commit: 7b5e18a0759de778b74d3a5c17eba9cb815035ac
       - type: file
         path: openscad.sh
+      # we need this patch so that FreeCAD can find QAssistant
+      - type: patch
+        path: patches/freecad-assistant-path.patch
       - type: shell
         commands:
-          - sed -i 's|@PACKAGE_VERSION@|0.19|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
+          - sed -i 's|@PACKAGE_VERSION@|0.19.2|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
           - sed -i 's|/usr|/app|g' cMake/FindOpenCasCade.cmake src/Gui/GraphvizView.cpp
+          # This sqlite3 command will tell QAssistant that the cache dir
+          # is NOT relative to the collection. Otherwise QAssisstant tries
+          # to create the cache dir in /app/share/doc/ that is read only.
+          - sqlite3 src/Doc/freecad.qhc "UPDATE SettingsTable SET Value='0' WHERE Key='CacheDirRelativeToCollection';"
