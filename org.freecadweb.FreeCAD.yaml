@@ -174,7 +174,7 @@ modules:
       - ./b2 install cxxflags="-I/usr/include/python3.7m" -j $FLATPAK_BUILDER_N_JOBS
     sources:
       - type: archive
-        url: https://dl.bintray.com/boostorg/release/1.67.0/source/boost_1_67_0.tar.bz2
+        url: https://boostorg.jfrog.io/artifactory/main/release/1.67.0/source/boost_1_67_0.tar.bz2
         sha256: 2684c972994ee57fc5632e03bf044746f6eb45d4920c343937a465fd67a5adba
 
   - name: coin
@@ -616,8 +616,8 @@ modules:
           - exec /app/freecad/bin/FreeCAD -u ${XDG_CONFIG_HOME}/FreeCAD/user.conf -s ${XDG_CONFIG_HOME}/FreeCAD/system.cfg "$@"
       - type: git
         url: https://github.com/FreeCAD/FreeCAD.git
-        tag: '0.19.2'
-        commit: 7b5e18a0759de778b74d3a5c17eba9cb815035ac
+        tag: '0.19.3'
+        commit: 6530e364184ce05ccff39501e175cf2237e6ee4b
       - type: file
         path: openscad.sh
       # we need this patch so that FreeCAD can find QAssistant
