@@ -1,8 +1,8 @@
 app-id: org.freecadweb.FreeCAD
 base: io.qt.qtwebkit.BaseApp
-base-version: '5.15'
+base-version: '5.15-21.08'
 runtime: org.kde.Platform
-runtime-version: '5.15'
+runtime-version: '5.15-21.08'
 sdk: org.kde.Sdk
 command: FreeCAD
 finish-args:
@@ -16,6 +16,8 @@ finish-args:
   - --filesystem=xdg-run/gvfs # make GnomeVFS accessible
   - --talk-name=org.freedesktop.Flatpak # to launch openscad
   - --env=TMPDIR=/var/tmp
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.llvm12
 add-extensions:
   org.freecadweb.FreeCAD.Manual:
     directory: share/doc/FreeCAD
@@ -37,6 +39,9 @@ modules:
   - name: pyside2
     buildsystem: cmake-ninja
     builddir: true
+    build-options:
+      prepend-path: /usr/lib/sdk/llvm12/bin
+      prepend-ld-library-path: /usr/lib/sdk/llvm12/lib
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
       - -DBUILD_TESTS=OFF
@@ -225,8 +230,8 @@ modules:
       - python3 setup.py install --prefix=/app --root=/
     sources:
       - type: archive
-        url: https://files.pythonhosted.org/packages/6c/9f/f501ba9d178aeb1f5bf7da1ad5619b207c90ac235d9859961c11829d0160/Cython-0.29.21.tar.gz
-        sha256: e57acb89bd55943c8d8bf813763d20b9099cc7165c0f16b707631a7654be9cad
+        url: https://files.pythonhosted.org/packages/59/e3/78c921adf4423fff68da327cc91b73a16c63f29752efe7beb6b88b6dd79d/Cython-0.29.24.tar.gz
+        sha256: cdf04d07c3600860e8c2ebaad4e8f52ac3feb212453c1764a49ac08c827e8443
 
   - name: numpy
     buildsystem: simple
@@ -238,8 +243,8 @@ modules:
       - /lib/python3.*/site-packages/numpy/*/tests
     sources:
       - type: archive
-        url: https://files.pythonhosted.org/packages/bf/e8/15aea783ea72e2d4e51e3ec365e8dc4a1a32c9e5eb3a6d695b0d58e67cdd/numpy-1.19.2.zip
-        sha256: 0d310730e1e793527065ad7dde736197b705d0e4c9999775f212b03c44a8484c
+        url: https://files.pythonhosted.org/packages/fb/48/b0708ebd7718a8933f0d3937513ef8ef2f4f04529f1f66ca86d873043921/numpy-1.21.4.zip
+        sha256: e6c76a87633aa3fa16614b61ccedfae45b91df2767cf097aa9c933932a7ed1e0
 
   - name: certifi
     buildsystem: simple
@@ -412,6 +417,7 @@ modules:
   - name: freeimage
     buildsystem: simple
     build-options:
+      cxxflags: -std=c++14
       arch:
         aarch64:
           # See https://sourceforge.net/p/freeimage/bugs/325/
@@ -583,13 +589,13 @@ modules:
     buildsystem: cmake-ninja
     builddir: true
     config-opts:
-      - -DCMAKE_BUILD_TYPE=Release
+      - -DCMAKE_BUILD_TYPE=RelWithDebInfo
     cleanup:
       - /share/doc
     sources:
       - type: archive
-        url: http://gmsh.info/src/gmsh-4.6.0-source.tgz
-        sha256: 0f2c55e50fb6c478ebc8977f6341c223754cbf3493b7b0d683b4395ae9f2ad1c
+        url: https://gmsh.info/src/gmsh-4.9.0-source.tgz
+        sha256: b8ef133c9b66ffe12df1747e72d4acf19f1eb1e9cd95eb0f577cbc4081d9bea3
 
   - name: python3-ply
     buildsystem: simple
@@ -619,12 +625,12 @@ modules:
       arch:
         x86_64:
           config-opts:
-            - -DSHIBOKEN_LIBRARY=shiboken2.cpython-38-x86_64-linux-gnu
-            - -DPYSIDE_LIBRARY=pyside2.cpython-38-x86_64-linux-gnu
+            - -DSHIBOKEN_LIBRARY=shiboken2.cpython-39-x86_64-linux-gnu
+            - -DPYSIDE_LIBRARY=pyside2.cpython-39-x86_64-linux-gnu
         aarch64:
           config-opts:
-            - -DSHIBOKEN_LIBRARY=shiboken2.cpython-38-aarch64-linux-gnu
-            - -DPYSIDE_LIBRARY=pyside2.cpython-38-aarch64-linux-gnu
+            - -DSHIBOKEN_LIBRARY=shiboken2.cpython-39-aarch64-linux-gnu
+            - -DPYSIDE_LIBRARY=pyside2.cpython-39-aarch64-linux-gnu
     post-install:
       - install -Dm755 ../openscad.sh ${FLATPAK_DEST}/bin/openscad
       - ln -s /app/freecad/bin/FreeCADCmd /app/bin/FreeCADCmd
@@ -641,8 +647,8 @@ modules:
           - exec /app/freecad/bin/FreeCAD -u ${XDG_CONFIG_HOME}/FreeCAD/user.conf -s ${XDG_CONFIG_HOME}/FreeCAD/system.cfg "$@"
       - type: git
         url: https://github.com/FreeCAD/FreeCAD.git
-        tag: '0.19.2'
-        commit: 7b5e18a0759de778b74d3a5c17eba9cb815035ac
+        tag: '0.19.3'
+        commit: 6530e364184ce05ccff39501e175cf2237e6ee4b
       - type: file
         path: openscad.sh
       # we need this patch so that FreeCAD can find QAssistant
@@ -650,7 +656,7 @@ modules:
         path: patches/freecad-assistant-path.patch
       - type: shell
         commands:
-          - sed -i 's|@PACKAGE_VERSION@|0.19.2|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
+          - sed -i 's|@PACKAGE_VERSION@|0.19.3|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
           - sed -i 's|/usr|/app|g' cMake/FindOpenCasCade.cmake src/Gui/GraphvizView.cpp
           # We need to properly set the icon name
           - sed -i 's|name="org.freecadweb.FreeCAD"|name="org.freecadweb.FreeCAD.application-x-extension-fcstd"|' src/XDGData/org.freecadweb.FreeCAD.xml
