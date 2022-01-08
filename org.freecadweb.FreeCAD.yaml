@@ -610,6 +610,21 @@ modules:
   - python3-pyyaml.json
   - python3-Pillow.json
 
+  # pybind11 used by mesh flattening feature
+  - name: pybind11
+    buildsystem: cmake-ninja
+    builddir: true
+    build-options:
+      - --target=pybind11::headers
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DPYBIND11_INSTALL=ON
+      - -DPYBIND11_TEST=OFF
+    sources:
+      - type: archive
+        url: https://deb.debian.org/debian/pool/main/p/pybind11/pybind11_2.9.0.orig.tar.gz
+        sha256: 057fb68dafd972bc13afb855f3b0d8cf0fa1a78ef053e815d9af79be7ff567cb
+
   - name: FreeCAD
     buildsystem: cmake-ninja
     builddir: true
@@ -618,6 +633,8 @@ modules:
       - -DCMAKE_INSTALL_PREFIX=/app/freecad
       - -DCMAKE_INSTALL_DATAROOTDIR=/app/share
       - -DCMAKE_PREFIX_PATH=/app
+      - -DFREECAD_USE_PYBIND11=ON
+      - -DBUILD_FLAT_MESH=ON
       - -DBUILD_QT5=ON
       - -DSHIBOKEN_INCLUDE_DIR=/app/include/shiboken2
       - -DPYSIDE_INCLUDE_DIR=/app/include/PySide2
@@ -627,10 +644,14 @@ modules:
           config-opts:
             - -DSHIBOKEN_LIBRARY=shiboken2.cpython-39-x86_64-linux-gnu
             - -DPYSIDE_LIBRARY=pyside2.cpython-39-x86_64-linux-gnu
+            - -DCMAKE_C_FLAGS_INIT=-I/usr/include/x86_64-linux-gnu/python3.9 -I/usr/include/python3.9
+            - -DCMAKE_CXX_FLAGS_INIT=-I/usr/include/x86_64-linux-gnu/python3.9 -I/usr/include/python3.9
         aarch64:
           config-opts:
             - -DSHIBOKEN_LIBRARY=shiboken2.cpython-39-aarch64-linux-gnu
             - -DPYSIDE_LIBRARY=pyside2.cpython-39-aarch64-linux-gnu
+            - -DCMAKE_C_FLAGS_INIT=-I/usr/include/aarch64-linux-gnu/python3.9 -I/usr/include/python3.9
+            - -DCMAKE_CXX_FLAGS_INIT=-I/usr/include/aarch64-linux-gnu/python3.9 -I/usr/include/python3.9
     post-install:
       - install -Dm755 ../openscad.sh ${FLATPAK_DEST}/bin/openscad
       - ln -s /app/freecad/bin/FreeCADCmd /app/bin/FreeCADCmd
