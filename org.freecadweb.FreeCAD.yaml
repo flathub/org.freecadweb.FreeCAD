@@ -14,8 +14,10 @@ finish-args:
   - --share=network
   - --filesystem=host # needed to make file saving work
   - --filesystem=xdg-run/gvfs # make GnomeVFS accessible
+  - --filesystem=/run/spnav.sock:ro # allow access to spacenavd
   - --talk-name=org.freedesktop.Flatpak # to launch openscad
   - --env=TMPDIR=/var/tmp
+  - --env=SPNAV_SOCKET=/run/spnav.sock
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.llvm12
 add-extensions:
@@ -169,8 +171,8 @@ modules:
   - name: libspnav
     sources:
       - type: archive
-        url: https://downloads.sourceforge.net/project/spacenav/spacenav%20library%20%28SDK%29/libspnav%200.2.3/libspnav-0.2.3.tar.gz
-        sha256: 7ae4d7bb7f6a5dda28b487891e01accc856311440f582299760dace6ee5f1f93
+        url: https://downloads.sourceforge.net/project/spacenav/spacenav%20library%20%28SDK%29/libspnav%200.3/libspnav-0.3.tar.gz
+        sha256: e1f855f47da6e75bdec81fe4b67171406abaf342c6fe3208c78e13bf862a3f05
 
   - name: boost
     buildsystem: simple
