@@ -506,7 +506,7 @@ modules:
       - -DLIBXML2_INCLUDE_DIR=/usr/include/libxml2
     build-options:
       arch:
-        # config-opts with meson doesn't do shell variable subsitutions
+        # config-opts with meson doesn't do shell variable substitutions
         # so we can't use $FLATPAK_ARCH
         x86_64:
           config-opts:
@@ -581,8 +581,8 @@ modules:
       - install -m0755 ccx_*/src/ccx_*_MT /app/bin/ccx
     sources:
       - type: archive
-        url: http://www.dhondt.de/ccx_2.17.src.tar.bz2
-        sha256: ca708ad4aa729d9f84a9faba343c1bcc0b7cc84ed372616ebb55c8e6fa8f6e50
+        url: http://www.dhondt.de/ccx_2.19.src.tar.bz2
+        sha256: c75a69685811e7996c9428b491c82f0eff777cc9a0999f469d10156d75f26d07
         strip-components: 2
       - type: patch
         path: patches/calculix-cxx-paths.patch
