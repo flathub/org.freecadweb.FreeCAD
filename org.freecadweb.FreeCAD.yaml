@@ -1,6 +1,6 @@
 app-id: org.freecadweb.FreeCAD
 default-branch: beta
-base: io.qt.qtwebkit.BaseApp
+base: io.qt.qtwebengine.BaseApp
 base-version: '5.15-21.08'
 runtime: org.kde.Platform
 runtime-version: '5.15-21.08'
@@ -20,6 +20,7 @@ finish-args:
   - --talk-name=org.freedesktop.Flatpak # to launch openscad
   - --env=TMPDIR=/var/tmp
   - --env=SPNAV_SOCKET=/run/spnav.sock
+  - --env=QTWEBENGINEPROCESS_PATH=/app/bin/QtWebEngineProcess
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.llvm12
 add-extensions:
@@ -55,6 +56,8 @@ modules:
       - type: archive
         url: https://download.qt.io/official_releases/QtForPython/pyside2/PySide2-5.15.2-src/pyside-setup-opensource-src-5.15.2.tar.xz
         sha256: b306504b0b8037079a8eab772ee774b9e877a2d84bab2dbefbe4fa6f83941418
+      - type: patch
+        path: patches/pyside-webengine.patch
       - type: shell
         commands:
           - mkdir -p /app/include/qt5tmp && cp -R /usr/include/Qt* /app/include/qt5tmp # https://bugreports.qt.io/browse/PYSIDE-787
