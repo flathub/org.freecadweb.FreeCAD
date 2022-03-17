@@ -16,8 +16,10 @@ finish-args:
   - --share=network
   - --filesystem=host # needed to make file saving work
   - --filesystem=xdg-run/gvfs # make GnomeVFS accessible
+  - --filesystem=/run/spnav.sock:ro # allow access to spacenavd
   - --talk-name=org.freedesktop.Flatpak # to launch openscad
   - --env=TMPDIR=/var/tmp
+  - --env=SPNAV_SOCKET=/run/spnav.sock
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.llvm12
 add-extensions:
@@ -171,8 +173,8 @@ modules:
   - name: libspnav
     sources:
       - type: archive
-        url: https://downloads.sourceforge.net/project/spacenav/spacenav%20library%20%28SDK%29/libspnav%200.2.3/libspnav-0.2.3.tar.gz
-        sha256: 7ae4d7bb7f6a5dda28b487891e01accc856311440f582299760dace6ee5f1f93
+        url: https://downloads.sourceforge.net/project/spacenav/spacenav%20library%20%28SDK%29/libspnav%200.3/libspnav-0.3.tar.gz
+        sha256: e1f855f47da6e75bdec81fe4b67171406abaf342c6fe3208c78e13bf862a3f05
 
   - name: boost
     buildsystem: simple
@@ -181,7 +183,7 @@ modules:
       - ./b2 install cxxflags="-I/usr/include/python3.7m" -j $FLATPAK_BUILDER_N_JOBS
     sources:
       - type: archive
-        url: https://dl.bintray.com/boostorg/release/1.67.0/source/boost_1_67_0.tar.bz2
+        url: https://boostorg.jfrog.io/artifactory/main/release/1.67.0/source/boost_1_67_0.tar.bz2
         sha256: 2684c972994ee57fc5632e03bf044746f6eb45d4920c343937a465fd67a5adba
 
   - name: coin
@@ -506,7 +508,7 @@ modules:
       - -DLIBXML2_INCLUDE_DIR=/usr/include/libxml2
     build-options:
       arch:
-        # config-opts with meson doesn't do shell variable subsitutions
+        # config-opts with meson doesn't do shell variable substitutions
         # so we can't use $FLATPAK_ARCH
         x86_64:
           config-opts:
@@ -581,8 +583,8 @@ modules:
       - install -m0755 ccx_*/src/ccx_*_MT /app/bin/ccx
     sources:
       - type: archive
-        url: http://www.dhondt.de/ccx_2.17.src.tar.bz2
-        sha256: ca708ad4aa729d9f84a9faba343c1bcc0b7cc84ed372616ebb55c8e6fa8f6e50
+        url: http://www.dhondt.de/ccx_2.19.src.tar.bz2
+        sha256: c75a69685811e7996c9428b491c82f0eff777cc9a0999f469d10156d75f26d07
         strip-components: 2
       - type: patch
         path: patches/calculix-cxx-paths.patch
@@ -620,6 +622,7 @@ modules:
       - -DCMAKE_INSTALL_PREFIX=/app/freecad
       - -DCMAKE_INSTALL_DATAROOTDIR=/app/share
       - -DCMAKE_PREFIX_PATH=/app
+      - -DBUILD_FLAT_MESH=ON
       - -DBUILD_QT5=ON
       - -DSHIBOKEN_INCLUDE_DIR=/app/include/shiboken2
       - -DPYSIDE_INCLUDE_DIR=/app/include/PySide2
@@ -649,8 +652,8 @@ modules:
           - exec /app/freecad/bin/FreeCAD -u ${XDG_CONFIG_HOME}/FreeCAD/user.conf -s ${XDG_CONFIG_HOME}/FreeCAD/system.cfg "$@"
       - type: git
         url: https://github.com/FreeCAD/FreeCAD.git
-        tag: '0.19.3'
-        commit: 6530e364184ce05ccff39501e175cf2237e6ee4b
+        #tag: '0.19.4'
+        commit: 89bf7f3d0b
       - type: file
         path: openscad.sh
       # we need this patch so that FreeCAD can find QAssistant
@@ -658,7 +661,7 @@ modules:
         path: patches/freecad-assistant-path.patch
       - type: shell
         commands:
-          - sed -i 's|@PACKAGE_VERSION@|0.19.3|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
+          - sed -i 's|@PACKAGE_VERSION@|0.20-weekly|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
           - sed -i 's|/usr|/app|g' cMake/FindOpenCasCade.cmake src/Gui/GraphvizView.cpp
           # We need to properly set the icon name
           - sed -i 's|name="org.freecadweb.FreeCAD"|name="org.freecadweb.FreeCAD.application-x-extension-fcstd"|' src/XDGData/org.freecadweb.FreeCAD.xml

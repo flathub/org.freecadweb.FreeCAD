@@ -1,6 +1,6 @@
 diff -ur CalculiX/ccx_2.17/src/Makefile_MT CalculiX_new/ccx_2.17/src/Makefile_MT
---- CalculiX/ccx_2.17/src/Makefile_MT	2020-07-23 21:41:38.507761972 +0200
-+++ CalculiX_new/ccx_2.17/src/Makefile_MT	2020-10-12 04:00:16.010748092 +0200
+--- CalculiX/ccx_2.19/src/Makefile_MT	2020-07-23 21:41:38.507761972 +0200
++++ CalculiX_new/ccx_2.19/src/Makefile_MT	2020-10-12 04:00:16.010748092 +0200
 @@ -1,6 +1,6 @@
  
 -CFLAGS = -Wall -O2 -fopenmp -I ../../../SPOOLES.2.2 -DARCH="Linux" -DSPOOLES -DARPACK -DMATRIXSTORAGE -DUSE_MT=1 
@@ -26,4 +26,4 @@ diff -ur CalculiX/ccx_2.17/src/Makefile_MT CalculiX_new/ccx_2.17/src/Makefile_MT
 +       /app/lib/libopenblas.a \
         -lpthread -lm
  
- ccx_2.17_MT: $(OCCXMAIN) ccx_2.17_MT.a  $(LIBS)
+ ccx_2.19_MT: $(OCCXMAIN) ccx_2.19_MT.a  $(LIBS)
