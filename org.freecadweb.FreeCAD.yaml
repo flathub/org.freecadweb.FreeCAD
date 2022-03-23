@@ -653,7 +653,7 @@ modules:
       - type: git
         url: https://github.com/FreeCAD/FreeCAD.git
         #tag: '0.19.4'
-        commit: 89bf7f3d0b
+        commit: 802aa53aa1
       - type: file
         path: openscad.sh
       # we need this patch so that FreeCAD can find QAssistant
