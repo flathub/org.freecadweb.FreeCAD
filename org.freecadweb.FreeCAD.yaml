@@ -95,6 +95,9 @@ modules:
     cleanup:
       - /bin
       - /man
+    post-install:
+      # Needed for graphviz
+      - ln -s tclsh8.6 /app/bin/tclsh
     sources:
       - type: archive
         url: https://downloads.sourceforge.net/project/tcl/Tcl/8.6.8/tcl8.6.8-src.tar.gz
@@ -115,11 +118,10 @@ modules:
         sha256: 49e7bca08dde95195a27f594f7c850b088be357a7c7096e44e1158c7a5fd7b33
 
   - name: graphviz
-    rm-configure: true
     sources:
       - type: archive
-        url: https://ftp.osuosl.org/pub/blfs/conglomeration/graphviz/graphviz-2.40.1.tar.gz
-        sha256: ca5218fade0204d59947126c38439f432853543b0818d9d728c589dfe7f3a421
+        url: https://ftp.osuosl.org/pub/blfs/conglomeration/graphviz/graphviz-3.0.0.tar.bz2
+        sha256: be96c0390da30c5639c611ba5b0824d0513195ab6c0f768c91a4eca2d0bb563d
       - type: shell
         commands:
           - sed -i '/LIBPOSTFIX="64"/s/64//' configure.ac
@@ -173,8 +175,8 @@ modules:
   - name: libspnav
     sources:
       - type: archive
-        url: https://downloads.sourceforge.net/project/spacenav/spacenav%20library%20%28SDK%29/libspnav%200.3/libspnav-0.3.tar.gz
-        sha256: e1f855f47da6e75bdec81fe4b67171406abaf342c6fe3208c78e13bf862a3f05
+        url: https://downloads.sourceforge.net/project/spacenav/spacenav%20library%20%28SDK%29/libspnav%201.0/libspnav-1.0.tar.gz
+        sha256: 8849b7f7826d750f6956cf8f4f53937f2359ab6da97d6c834c71d5f771212e7c
 
   - name: boost
     buildsystem: simple
@@ -598,8 +600,8 @@ modules:
       - /share/doc
     sources:
       - type: archive
-        url: https://gmsh.info/src/gmsh-4.9.0-source.tgz
-        sha256: b8ef133c9b66ffe12df1747e72d4acf19f1eb1e9cd95eb0f577cbc4081d9bea3
+        url: https://gmsh.info/src/gmsh-4.9.5-source.tgz
+        sha256: ffd64900844208719c88d91a66c281889023132b7a9e282c51548cb9f6f3ad44
 
   - name: python3-ply
     buildsystem: simple
