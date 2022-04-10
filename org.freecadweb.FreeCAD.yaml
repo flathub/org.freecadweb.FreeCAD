@@ -501,6 +501,11 @@ modules:
   - name: opencascade
     buildsystem: cmake-ninja
     builddir: true
+    build-options:
+        arch:
+            aarch64:
+                config-opts:
+                  - -DUSE_GLES2=ON
     config-opts:
       - -DCMAKE_BUILD_TYPE=RelWithDebInfo
       - -DUSE_FREEIMAGE=ON
