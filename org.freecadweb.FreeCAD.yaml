@@ -60,7 +60,7 @@ modules:
         path: patches/pyside-webengine.patch
       - type: shell
         commands:
-          - mkdir -p /app/include/qt5tmp && cp -R /usr/include/Qt* /app/include/qt5tmp # https://bugreports.qt.io/browse/PYSIDE-787
+          - mkdir -p /app/include/qt5tmp && cp -R /usr/include/Qt* /app/include/Qt* /app/include/qt5tmp # https://bugreports.qt.io/browse/PYSIDE-787
           - sed -i 's|\(--include-paths=\)|\1/app/include/qt5tmp:|' sources/pyside2/cmake/Macros/PySideModules.cmake
 
   - name: swig
