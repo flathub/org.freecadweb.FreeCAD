@@ -54,8 +54,8 @@ modules:
       - /bin
     sources:
       - type: archive
-        url: https://download.qt.io/official_releases/QtForPython/pyside2/PySide2-5.15.2-src/pyside-setup-opensource-src-5.15.2.tar.xz
-        sha256: b306504b0b8037079a8eab772ee774b9e877a2d84bab2dbefbe4fa6f83941418
+        url: https://download.qt.io/official_releases/QtForPython/pyside2/PySide2-5.15.4-src/pyside-setup-opensource-src-5.15.4.tar.xz
+        sha256: 3c68ed0def4111ef5d0641370306338d277ae8983a77eaf22f223ddd3a14450b
       - type: patch
         path: patches/pyside-webengine.patch
       - type: shell
