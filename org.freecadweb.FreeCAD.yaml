@@ -450,8 +450,8 @@ modules:
       - cp -a include/tbb /app/include
     sources:
       - type: archive
-        url: https://github.com/oneapi-src/oneTBB/archive/2019_U1.tar.gz
-        sha256: e6fb8dd1a1ae834b4e5f4ae6c4c87a3362f81a3aaeddfa6325168c6cfee59391
+        url: https://github.com/oneapi-src/oneTBB/archive/refs/tags/2019_U9.tar.gz
+        sha256: 3f5ea81b9caa195f1967a599036b473b2e7c347117330cda99b79cfcf5b77c84
 
   - name: VTK
     buildsystem: cmake-ninja
@@ -478,7 +478,7 @@ modules:
     buildsystem: cmake-ninja
     builddir: true
     config-opts:
-      - -DCMAKE_BUILD_TYPE=Release
+      - -DCMAKE_BUILD_TYPE=RelWithDebInfo
       - -DUSE_FREEIMAGE=ON
       - -DUSE_VTK=ON
       - -DUSE_TBB=ON
@@ -487,12 +487,8 @@ modules:
       - /bin
     sources:
       - type: archive
-        url: http://http.debian.net/debian/pool/main/o/opencascade/opencascade_7.3.0+dfsg1.orig.tar.gz
-        sha256: f829ee485c0edaf68c845999c38e16604cf333a7bfd44d0d598ef16ed430ac3f
-      - type: patch
-        path: patches/opencascade-vtk.patch
-      - type: patch
-        path: patches/opencascade-build.patch
+        url: http://deb.debian.org/debian/pool/main/o/opencascade/opencascade_7.5.1+dfsg1.orig.tar.xz
+        sha256: c948327d5ef11e7322244489e5d72f9651472e9f571ae3cf1ea393aef331abb9
 
   - name: IfcOpenShell
     buildsystem: cmake-ninja
