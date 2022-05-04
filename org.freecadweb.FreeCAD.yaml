@@ -419,6 +419,8 @@ modules:
       - type: archive
         url: https://www.unidata.ucar.edu/downloads/netcdf/ftp/netcdf-4.6.1.tar.gz
         sha256: 89c7957458740b763ae828c345240b8a1d29c2c1fed0f065f99b73181b0b2642
+        mirror-urls:
+          - https://www.gfd-dennou.org/library/netcdf/unidata-mirror/netcdf-4.6.1.tar.gz
 
   - name: freeimage
     buildsystem: simple
