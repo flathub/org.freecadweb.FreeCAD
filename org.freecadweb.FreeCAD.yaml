@@ -480,6 +480,23 @@ modules:
         commands: # gcc-10
           - sed -e 's|REGEX MATCH \"\[3-9\]|REGEX MATCH \"[1-9][0-9]|' -i CMake/VTKGenerateExportHeader.cmake
 
+  - name: rapidjson
+    buildsystem: cmake-ninja
+    config-opts:
+    - -DRAPIDJSON_BUILD_DOC=OFF
+    - -DRAPIDJSON_BUILD_EXAMPLES=OFF
+    - -DRAPIDJSON_BUILD_TESTS=OFF
+    - -DRAPIDJSON_BUILD_THIRDPARTY_GTEST=OFF
+    cleanup:
+      - /include
+      - /lib/cmake
+      - /lib/pkgconfig
+      - /share/doc
+    sources:
+      - type: archive
+        url: https://github.com/Tencent/rapidjson/archive/refs/tags/v1.1.0.tar.gz
+        sha256: bf7ced29704a1e696fbccf2a2b4ea068e7774fa37f6d7dd4039d0787f8bed98e
+
   - name: opencascade
     buildsystem: cmake-ninja
     builddir: true
@@ -488,6 +505,8 @@ modules:
       - -DUSE_FREEIMAGE=ON
       - -DUSE_VTK=ON
       - -DUSE_TBB=ON
+      - -DUSE_RAPIDJSON=ON
+      - -DBUILD_RELEASE_DISABLE_EXCEPTIONS=OFF
       - -DBUILD_DOC_Overview=OFF
     cleanup:
       - /bin
