@@ -1,0 +1,14 @@
+diff --git a/src/main.cpp b/src/main.cpp
+index 93ecfb6..18e0b87 100644
+--- a/src/main.cpp
++++ b/src/main.cpp
+@@ -18,6 +18,9 @@
+  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.	    *
+  ****************************************************************************/
+ 
++#include <stddef.h>
++#include <string.h>
++
+ #include "svgfill.h"
+ #include "progress.h"
+ 
