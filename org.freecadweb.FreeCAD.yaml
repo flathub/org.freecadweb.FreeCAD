@@ -666,10 +666,9 @@ modules:
         dest-filename: FreeCAD.sh
         commands:
           - exec /app/freecad/bin/FreeCAD -u ${XDG_CONFIG_HOME}/FreeCAD/user.conf -s ${XDG_CONFIG_HOME}/FreeCAD/system.cfg "$@"
-      - type: git
-        url: https://github.com/FreeCAD/FreeCAD.git
-        tag: '0.20beta1'
-        # commit: 59e1836c9bd613ef9264740da9755b33ac5823a6
+      - type: archive
+        url: https://github.com/FreeCAD/FreeCAD-Bundle/releases/download/0.20beta1/freecad_source.tar.gz
+        sha256: 77d5d75e46415f6dd1673b50b8d80b6f052e487d919f1b598c776684d04a632f
       - type: file
         path: openscad.sh
       # we need this patch so that FreeCAD can find QAssistant
