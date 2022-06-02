@@ -709,7 +709,6 @@ modules:
       - type: git
         url: https://github.com/FreeCAD/FreeCAD.git
         tag: '0.20beta1'
-        # commit: 59e1836c9bd613ef9264740da9755b33ac5823a6
       - type: file
         path: openscad.sh
       # we need this patch so that FreeCAD can find QAssistant
@@ -717,7 +716,14 @@ modules:
         path: patches/freecad-assistant-path.patch
       - type: shell
         commands:
-          - sed -i 's|@PACKAGE_VERSION@|0.20beta1|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
+          # revcount needs to be updated any time the source commit or tag is changed
+          # to obtain the revcount for a given gitRef (commit hash, branch or tag) run
+          # echo $(($(curl -s 'https://api.github.com/repos/FreeCAD/FreeCAD/compare/120ca87015...'"$gitRef"'' | grep "ahead_by" | sed -s 's/ //g;s/"ahead_by"://;s/,//')+1))
+          - |
+            revcount=28936
+            sed -i 's|${PACKAGE_WCREF}|'"$revcount"' (Git)|' src/Build/Version.h.cmake
+            sed -i 's|@PACKAGE_VERSION@|@PACKAGE_VERSION@.'"$revcount"'|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
+          - sed -i 's|${PACKAGE_WCURL}|git://github.com/FreeCAD/FreeCAD.git|' src/Build/Version.h.cmake
           - sed -i 's|/usr|/app|g' cMake/FindOpenCasCade.cmake src/Gui/GraphvizView.cpp
           # We need to properly set the icon name
           - sed -i 's|name="org.freecadweb.FreeCAD"|name="org.freecadweb.FreeCAD.application-x-extension-fcstd"|' src/XDGData/org.freecadweb.FreeCAD.xml
