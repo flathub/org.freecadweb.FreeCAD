@@ -698,14 +698,10 @@ modules:
     post-install:
       - install -Dm755 ../openscad.sh ${FLATPAK_DEST}/bin/openscad
       - ln -s /app/freecad/bin/FreeCADCmd /app/bin/FreeCADCmd
-      - install -D ../FreeCAD.sh /app/bin/FreeCAD
+      - ln -s /app/freecad/bin/FreeCAD /app/bin/FreeCAD
       # The mimetype icon to be exported.
       - install -Dm644 ../src/Gui/Icons/freecad-doc.svg ${FLATPAK_DEST}/share/icons/hicolor/scalable/mimetypes/${FLATPAK_ID}.application-x-extension-fcstd.svg
     sources:
-      - type: script
-        dest-filename: FreeCAD.sh
-        commands:
-          - exec /app/freecad/bin/FreeCAD -u ${XDG_CONFIG_HOME}/FreeCAD/user.conf -s ${XDG_CONFIG_HOME}/FreeCAD/system.cfg "$@"
       - type: git
         url: https://github.com/FreeCAD/FreeCAD.git
         tag: '0.20beta1'
