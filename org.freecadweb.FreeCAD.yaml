@@ -549,10 +549,11 @@ modules:
     buildsystem: cmake-ninja
     builddir: true
     subdir: cmake
-    no-parallel-make: true
     config-opts:
       - -DCMAKE_BUILD_TYPE=RelWithDebInfo
       - -DBUILD_EXAMPLES=OFF
+      - -DBUILD_GEOMSERVER=OFF
+      - -DBUILD_CONVERT=OFF
       - -DENABLE_BUILD_OPTIMIZATIONS=ON
       - -DCGAL_INCLUDE_DIR=/app/include
       - -DOCC_INCLUDE_DIR=/app/include/opencascade
@@ -583,11 +584,6 @@ modules:
         commit: a11b51c971f2c3013855e13ff1929fe712ddc7de
       - type: patch
         path: patches/IfcOpenShell-hdf5.patch
-      - type: patch
-        options:
-          - -d
-          - src/svgfill
-        path: patches/IfcOpenShell-svgfill.patch
 
   - name: lapack
     buildsystem: cmake-ninja
