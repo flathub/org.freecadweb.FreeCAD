@@ -1,5 +1,5 @@
 app-id: org.freecadweb.FreeCAD
-base: io.qt.qtwebkit.BaseApp
+base: io.qt.qtwebengine.BaseApp
 base-version: '5.15-21.08'
 runtime: org.kde.Platform
 runtime-version: '5.15-21.08'
@@ -18,6 +18,7 @@ finish-args:
   - --talk-name=org.freedesktop.Flatpak # to launch openscad
   - --env=TMPDIR=/var/tmp
   - --env=SPNAV_SOCKET=/run/spnav.sock
+  - --env=QTWEBENGINEPROCESS_PATH=/app/bin/QtWebEngineProcess
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.llvm12
 add-extensions:
@@ -51,11 +52,13 @@ modules:
       - /bin
     sources:
       - type: archive
-        url: https://download.qt.io/official_releases/QtForPython/pyside2/PySide2-5.15.2-src/pyside-setup-opensource-src-5.15.2.tar.xz
-        sha256: b306504b0b8037079a8eab772ee774b9e877a2d84bab2dbefbe4fa6f83941418
+        url: https://download.qt.io/official_releases/QtForPython/pyside2/PySide2-5.15.4-src/pyside-setup-opensource-src-5.15.4.tar.xz
+        sha256: 3c68ed0def4111ef5d0641370306338d277ae8983a77eaf22f223ddd3a14450b
+      - type: patch
+        path: patches/pyside-webengine.patch
       - type: shell
         commands:
-          - mkdir -p /app/include/qt5tmp && cp -R /usr/include/Qt* /app/include/qt5tmp # https://bugreports.qt.io/browse/PYSIDE-787
+          - mkdir -p /app/include/qt5tmp && cp -R /usr/include/Qt* /app/include/Qt* /app/include/qt5tmp # https://bugreports.qt.io/browse/PYSIDE-787
           - sed -i 's|\(--include-paths=\)|\1/app/include/qt5tmp:|' sources/pyside2/cmake/Macros/PySideModules.cmake
 
   - name: swig
@@ -93,6 +96,9 @@ modules:
     cleanup:
       - /bin
       - /man
+    post-install:
+      # Needed for graphviz
+      - ln -s tclsh8.6 /app/bin/tclsh
     sources:
       - type: archive
         url: https://downloads.sourceforge.net/project/tcl/Tcl/8.6.8/tcl8.6.8-src.tar.gz
@@ -113,11 +119,10 @@ modules:
         sha256: 49e7bca08dde95195a27f594f7c850b088be357a7c7096e44e1158c7a5fd7b33
 
   - name: graphviz
-    rm-configure: true
     sources:
       - type: archive
-        url: https://ftp.osuosl.org/pub/blfs/conglomeration/graphviz/graphviz-2.40.1.tar.gz
-        sha256: ca5218fade0204d59947126c38439f432853543b0818d9d728c589dfe7f3a421
+        url: https://ftp.osuosl.org/pub/blfs/conglomeration/graphviz/graphviz-3.0.0.tar.bz2
+        sha256: be96c0390da30c5639c611ba5b0824d0513195ab6c0f768c91a4eca2d0bb563d
       - type: shell
         commands:
           - sed -i '/LIBPOSTFIX="64"/s/64//' configure.ac
@@ -171,18 +176,18 @@ modules:
   - name: libspnav
     sources:
       - type: archive
-        url: https://downloads.sourceforge.net/project/spacenav/spacenav%20library%20%28SDK%29/libspnav%200.3/libspnav-0.3.tar.gz
-        sha256: e1f855f47da6e75bdec81fe4b67171406abaf342c6fe3208c78e13bf862a3f05
+        url: https://downloads.sourceforge.net/project/spacenav/spacenav%20library%20%28SDK%29/libspnav%201.0/libspnav-1.0.tar.gz
+        sha256: 8849b7f7826d750f6956cf8f4f53937f2359ab6da97d6c834c71d5f771212e7c
 
   - name: boost
     buildsystem: simple
     build-commands:
-      - ./bootstrap.sh --prefix=/app --with-libraries=filesystem,program_options,regex,signals,system,thread,python,date_time --with-python=/usr/bin/python3
-      - ./b2 install cxxflags="-I/usr/include/python3.7m" -j $FLATPAK_BUILDER_N_JOBS
+      - ./bootstrap.sh --prefix=/app --with-libraries=filesystem,program_options,regex,system,thread,python,date_time,chrono,atomic --with-python=/usr/bin/python3
+      - ./b2 install cxxflags="-I/usr/include/python3.9" -j $FLATPAK_BUILDER_N_JOBS
     sources:
       - type: archive
-        url: https://boostorg.jfrog.io/artifactory/main/release/1.67.0/source/boost_1_67_0.tar.bz2
-        sha256: 2684c972994ee57fc5632e03bf044746f6eb45d4920c343937a465fd67a5adba
+        url: https://boostorg.jfrog.io/artifactory/main/release/1.71.0/source/boost_1_71_0.tar.bz2
+        sha256: d73a8da01e8bf8c7eda40b4c84915071a8c8a0df4a6734537ddde4a8580524ee
 
   - name: coin
     buildsystem: cmake-ninja
@@ -507,18 +512,54 @@ modules:
     cleanup:
       - /bin
     sources:
+      - type: git
+        url: https://gitlab.com/blobfish/occt.git/
+        # branch: V7_6_2_BF
+        commit: f3f00c9e9487713be0c64f36c53590cc0f30e5a6
+
+  # new deps for IfcOpenShell
+  - name: mpfr
+    sources:
       - type: archive
-        url: http://deb.debian.org/debian/pool/main/o/opencascade/opencascade_7.5.1+dfsg1.orig.tar.xz
-        sha256: c948327d5ef11e7322244489e5d72f9651472e9f571ae3cf1ea393aef331abb9
+        url: https://ftp.gnu.org/gnu/mpfr/mpfr-3.1.5.tar.xz
+        sha256: 015fde82b3979fbe5f83501986d328331ba8ddf008c1ff3da3c238f49ca062bc
+  - name: gmp
+    sources:
+      - type: archive
+        url: https://gmplib.org/download/gmp/gmp-6.2.1.tar.bz2
+        sha256: eae9326beb4158c386e39a356818031bd28f3124cf915f8c5b1dc4c7a36b4d7c
+  - name: cgal
+    cleanup:
+      - /include
+      - /lib/cmake
+      - /share/man
+      - /bin
+    buildsystem: cmake-ninja
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=RelWithDebInfo
+      - -DCGAL_HEADER_ONLY=ON
+    sources:
+      - type: archive
+        url: https://github.com/CGAL/cgal/releases/download/v5.3.1/CGAL-5.3.1.tar.xz
+        sha256: ab76633b023d72ea3ca9ad22e2fa39ed3b5c8fb4e2c091a78035fabb5eb3fccf
 
   - name: IfcOpenShell
     buildsystem: cmake-ninja
     builddir: true
     subdir: cmake
     config-opts:
-      - -DCMAKE_BUILD_TYPE=Release
+      - -DCMAKE_BUILD_TYPE=RelWithDebInfo
+      - -DBUILD_EXAMPLES=OFF
+      - -DBUILD_GEOMSERVER=OFF
+      - -DBUILD_CONVERT=OFF
+      - -DENABLE_BUILD_OPTIMIZATIONS=ON
+      - -DCGAL_INCLUDE_DIR=/app/include
       - -DOCC_INCLUDE_DIR=/app/include/opencascade
       - -DOCC_LIBRARY_DIR=/app/lib
+      - -DGMP_LIBRARY_DIR=/app/lib
+      - -DMPFR_LIBRARY_DIR=/app/lib
+      - -DHDF5_INCLUDE_DIR=/app/include
+      - -DHDF5_LIBRARY_DIR=/app/lib
       - -DCOLLADA_SUPPORT=OFF
       - -DLIBXML2_INCLUDE_DIR=/usr/include/libxml2
     build-options:
@@ -533,10 +574,14 @@ modules:
             - -DLIBXML2_LIBRARIES=/usr/lib/aarch64-linux-gnu/libxml2.so
     build-commands:
       - sed -i 's|/usr|/app|g' ifcwrap/cmake_install.cmake
+      - sed -i 's|/usr|/app|g' ifcwrap/cmake_install.cmake
     sources:
-      - type: archive
-        url: https://github.com/IfcOpenShell/IfcOpenShell/archive/v0.6.0b0.tar.gz
-        sha256: d4a9a28b715512659670f2a101bef64363df7808a64ed30e7019161caae6a914
+      - type: git
+        url: https://github.com/IfcOpenShell/IfcOpenShell.git
+        tag: v0.7.0a2
+        commit: a11b51c971f2c3013855e13ff1929fe712ddc7de
+      - type: patch
+        path: patches/IfcOpenShell-hdf5.patch
 
   - name: lapack
     buildsystem: cmake-ninja
@@ -613,8 +658,8 @@ modules:
       - /share/doc
     sources:
       - type: archive
-        url: https://gmsh.info/src/gmsh-4.9.0-source.tgz
-        sha256: b8ef133c9b66ffe12df1747e72d4acf19f1eb1e9cd95eb0f577cbc4081d9bea3
+        url: https://gmsh.info/src/gmsh-4.9.5-source.tgz
+        sha256: ffd64900844208719c88d91a66c281889023132b7a9e282c51548cb9f6f3ad44
 
   - name: python3-ply
     buildsystem: simple
@@ -654,21 +699,14 @@ modules:
     post-install:
       - install -Dm755 ../openscad.sh ${FLATPAK_DEST}/bin/openscad
       - ln -s /app/freecad/bin/FreeCADCmd /app/bin/FreeCADCmd
-      - install -D ../FreeCAD.sh /app/bin/FreeCAD
+      - ln -s /app/freecad/bin/FreeCAD /app/bin/FreeCAD
       # The mimetype icon to be exported.
       - install -Dm644 ../src/Gui/Icons/freecad-doc.svg ${FLATPAK_DEST}/share/icons/hicolor/scalable/mimetypes/${FLATPAK_ID}.application-x-extension-fcstd.svg
-      # we need to copy QAssistant from the platform before it gets cleaned up
-      # We'll need a patch too, see below
-      - cp /usr/bin/assistant /app/bin
     sources:
-      - type: script
-        dest-filename: FreeCAD.sh
-        commands:
-          - exec /app/freecad/bin/FreeCAD -u ${XDG_CONFIG_HOME}/FreeCAD/user.conf -s ${XDG_CONFIG_HOME}/FreeCAD/system.cfg "$@"
       - type: git
         url: https://github.com/FreeCAD/FreeCAD.git
-        tag: '0.19.4'
-        commit: 476ecf091941bead59b14e44afa6064d5a66afa3
+        tag: '0.20'
+        commit: 68e337670e227889217652ddac593c93b5e8dc94
       - type: file
         path: openscad.sh
       # we need this patch so that FreeCAD can find QAssistant
@@ -676,11 +714,14 @@ modules:
         path: patches/freecad-assistant-path.patch
       - type: shell
         commands:
-          - sed -i 's|@PACKAGE_VERSION@|0.19.4|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
+          # revcount needs to be updated any time the source commit or tag is changed
+          # to obtain the revcount for a given gitRef (commit hash, branch or tag) run
+          # echo $(($(curl -s 'https://api.github.com/repos/FreeCAD/FreeCAD/compare/120ca87015...'"$gitRef"'' | grep "ahead_by" | sed -s 's/ //g;s/"ahead_by"://;s/,//')+1))
+          - |
+            revcount=29177
+            sed -i 's|${PACKAGE_WCREF}|'"$revcount"' (Git)|' src/Build/Version.h.cmake
+            sed -i 's|@PACKAGE_VERSION@|@PACKAGE_VERSION@.'"$revcount"'|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
+          - sed -i 's|${PACKAGE_WCURL}|https://github.com/FreeCAD/FreeCAD.git|' src/Build/Version.h.cmake
           - sed -i 's|/usr|/app|g' cMake/FindOpenCasCade.cmake src/Gui/GraphvizView.cpp
           # We need to properly set the icon name
           - sed -i 's|name="org.freecadweb.FreeCAD"|name="org.freecadweb.FreeCAD.application-x-extension-fcstd"|' src/XDGData/org.freecadweb.FreeCAD.xml
-          # This sqlite3 command will tell QAssistant that the cache dir
-          # is NOT relative to the collection. Otherwise QAssisstant tries
-          # to create the cache dir in /app/share/doc/ that is read only.
-          - sqlite3 src/Doc/freecad.qhc "UPDATE SettingsTable SET Value='0' WHERE Key='CacheDirRelativeToCollection';"
