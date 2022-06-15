@@ -221,10 +221,13 @@ modules:
     build-commands:
       - python3 setup.py build
       - python3 setup.py install --prefix=/app
+    build-options:
+      env:
+        PREFIX: /app
     sources:
       - type: archive
-        url: https://github.com/coin3d/pivy/archive/0.6.7.tar.gz
-        sha256: 37e33d85117aac27640e011df74ddcd77f270428300df916b46ee5c50645d582
+        url: https://github.com/coin3d/pivy/archive/0.6.5.tar.gz
+        sha256: 16f2e339e5c59a6438266abe491013a20f53267e596850efad1559564a2c1719
       - type: shell
         commands:
           - sed -i 's|QUIET|REQUIRED|g' CMakeLists.txt
