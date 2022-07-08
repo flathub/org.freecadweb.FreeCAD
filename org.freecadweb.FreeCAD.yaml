@@ -524,6 +524,8 @@ modules:
         url: https://ftp.gnu.org/gnu/mpfr/mpfr-3.1.5.tar.xz
         sha256: 015fde82b3979fbe5f83501986d328331ba8ddf008c1ff3da3c238f49ca062bc
   - name: gmp
+    config-opts:
+      - --enable-fat
     sources:
       - type: archive
         url: https://gmplib.org/download/gmp/gmp-6.2.1.tar.bz2
