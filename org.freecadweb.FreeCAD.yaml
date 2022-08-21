@@ -676,6 +676,17 @@ modules:
   - python3-pyyaml.json
   - python3-Pillow.json
 
+  # For add-on manager
+  - name: python3-pip
+    buildsystem: simple
+    build-commands:
+      # ignore installed because it's in the SDK
+      - pip3 install --exists-action=i --ignore-installed --no-index --find-links="file://${PWD}" --prefix=${FLATPAK_DEST} "pip" --no-build-isolation
+    sources:
+      - type: file
+        url: https://files.pythonhosted.org/packages/1f/2c/d9626f045e7b49a6225c6b09257861f24da78f4e5f23af2ddbdf852c99b8/pip-22.2.2-py3-none-any.whl
+        sha256: b61a374b5bc40a6e982426aede40c9b5a08ff20e640f5b56977f4f91fed1e39a
+
   - name: FreeCAD
     buildsystem: cmake-ninja
     builddir: true
