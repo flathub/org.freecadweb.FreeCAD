@@ -737,6 +737,8 @@ modules:
       # we need this patch so that FreeCAD can find QAssistant
       - type: patch
         path: patches/freecad-assistant-path.patch
+      - type: patch
+        path: patches/freecad-gl.patch
       - type: shell
         commands:
           # revcount needs to be updated any time the source commit or tag is changed

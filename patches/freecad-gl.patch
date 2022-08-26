@@ -1,0 +1,13 @@
+diff --git a/src/Gui/Quarter/QuarterWidget.cpp b/src/Gui/Quarter/QuarterWidget.cpp
+index fb00de28c5..b0b622c271 100644
+--- a/src/Gui/Quarter/QuarterWidget.cpp
++++ b/src/Gui/Quarter/QuarterWidget.cpp
+@@ -54,6 +54,8 @@
+ 
+ #include <cassert>
+ 
++#include <GL/gl.h>
++
+ #include <QAction>
+ #include <QApplication>
+ #include <QDebug>
