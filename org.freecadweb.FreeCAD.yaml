@@ -523,13 +523,6 @@ modules:
       - type: archive
         url: https://ftp.gnu.org/gnu/mpfr/mpfr-3.1.5.tar.xz
         sha256: 015fde82b3979fbe5f83501986d328331ba8ddf008c1ff3da3c238f49ca062bc
-  - name: gmp
-    config-opts:
-      - --enable-fat
-    sources:
-      - type: archive
-        url: https://gmplib.org/download/gmp/gmp-6.2.1.tar.bz2
-        sha256: eae9326beb4158c386e39a356818031bd28f3124cf915f8c5b1dc4c7a36b4d7c
   - name: cgal
     cleanup:
       - /include
@@ -558,7 +551,7 @@ modules:
       - -DCGAL_INCLUDE_DIR=/app/include
       - -DOCC_INCLUDE_DIR=/app/include/opencascade
       - -DOCC_LIBRARY_DIR=/app/lib
-      - -DGMP_LIBRARY_DIR=/app/lib
+      - -DGMP_INCLUDE_DIR=/usr/include
       - -DMPFR_LIBRARY_DIR=/app/lib
       - -DHDF5_INCLUDE_DIR=/app/include
       - -DHDF5_LIBRARY_DIR=/app/lib
@@ -566,13 +559,15 @@ modules:
       - -DLIBXML2_INCLUDE_DIR=/usr/include/libxml2
     build-options:
       arch:
-        # config-opts with meson doesn't do shell variable substitutions
+        # config-opts with cmake doesn't do shell variable substitutions
         # so we can't use $FLATPAK_ARCH
         x86_64:
           config-opts:
+            - -DGMP_LIBRARY_DIR=/usr/lib/x86_64-linux-gnu
             - -DLIBXML2_LIBRARIES=/usr/lib/x86_64-linux-gnu/libxml2.so
         aarch64:
           config-opts:
+            - -DGMP_LIBRARY_DIR=/usr/lib/aarch64-linux-gnu
             - -DLIBXML2_LIBRARIES=/usr/lib/aarch64-linux-gnu/libxml2.so
     build-commands:
       - sed -i 's|/usr|/app|g' ifcwrap/cmake_install.cmake
