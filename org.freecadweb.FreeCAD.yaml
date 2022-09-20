@@ -701,6 +701,7 @@ modules:
       - -DBUILD_QT5=ON
       - -DSHIBOKEN_INCLUDE_DIR=/app/include/shiboken2
       - -DPYSIDE_INCLUDE_DIR=/app/include/PySide2
+      - -DINSTALL_TO_SITEPACKAGES=ON
     build-options:
       arch:
         x86_64:
@@ -735,7 +736,10 @@ modules:
             revcount=30134
             sed -i 's|${PACKAGE_WCREF}|'"$revcount"' (Git)|' src/Build/Version.h.cmake
             sed -i 's|@PACKAGE_VERSION@|@PACKAGE_VERSION@.'"$revcount"'|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
-          - sed -i 's|${PACKAGE_WCURL}|https://github.com/FreeCAD/FreeCAD.git|' src/Build/Version.h.cmake
-          - sed -i 's|/usr|/app|g' cMake/FindOCC.cmake src/Gui/GraphvizView.cpp
+            sed -i 's|${PACKAGE_WCURL}|https://github.com/FreeCAD/FreeCAD.git|' src/Build/Version.h.cmake
+          - | # fix paths for flatpak environment
+            sed -i 's|/usr|/app|g' cMake/FindOCC.cmake src/Gui/GraphvizView.cpp
+            sitepackagesDir=$(python3 -c 'import sysconfig; print(sysconfig.get_paths()["platlib"])' | sed 's|/usr|/app|')
+            sed -i 's|${python_libs}|'"$sitepackagesDir"'|' src/Ext/freecad/CMakeLists.txt
           # We need to properly set the icon name
           - sed -i 's|name="org.freecadweb.FreeCAD"|name="org.freecadweb.FreeCAD.application-x-extension-fcstd"|' src/XDGData/org.freecadweb.FreeCAD.xml
