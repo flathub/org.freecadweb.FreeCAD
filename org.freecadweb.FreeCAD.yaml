@@ -1,12 +1,11 @@
 app-id: org.freecadweb.FreeCAD
 base: io.qt.qtwebengine.BaseApp
-base-version: '5.15-21.08'
+base-version: '5.15-22.08'
 runtime: org.kde.Platform
-runtime-version: '5.15-21.08'
+runtime-version: '5.15-22.08'
 sdk: org.kde.Sdk
 command: FreeCAD
 finish-args:
-  - --socket=wayland
   - --env=QT_QPA_PLATFORM=xcb
   - --share=ipc
   - --socket=x11
@@ -20,7 +19,7 @@ finish-args:
   - --env=SPNAV_SOCKET=/run/spnav.sock
   - --env=QTWEBENGINEPROCESS_PATH=/app/bin/QtWebEngineProcess
 sdk-extensions:
-  - org.freedesktop.Sdk.Extension.llvm12
+  - org.freedesktop.Sdk.Extension.llvm14
 add-extensions:
   org.freecadweb.FreeCAD.Manual:
     directory: share/doc/FreeCAD
@@ -43,8 +42,8 @@ modules:
     buildsystem: cmake-ninja
     builddir: true
     build-options:
-      prepend-path: /usr/lib/sdk/llvm12/bin
-      prepend-ld-library-path: /usr/lib/sdk/llvm12/lib
+      prepend-path: /usr/lib/sdk/llvm14/bin
+      prepend-ld-library-path: /usr/lib/sdk/llvm14/lib
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
       - -DBUILD_TESTS=OFF
@@ -183,11 +182,11 @@ modules:
     buildsystem: simple
     build-commands:
       - ./bootstrap.sh --prefix=/app --with-libraries=filesystem,program_options,regex,system,thread,python,date_time,chrono,atomic --with-python=/usr/bin/python3
-      - ./b2 install cxxflags="-I/usr/include/python3.9" -j $FLATPAK_BUILDER_N_JOBS
+      - ./b2 install cxxflags="-I/usr/include/python3.10" -j $FLATPAK_BUILDER_N_JOBS
     sources:
       - type: archive
-        url: https://boostorg.jfrog.io/artifactory/main/release/1.71.0/source/boost_1_71_0.tar.bz2
-        sha256: d73a8da01e8bf8c7eda40b4c84915071a8c8a0df4a6734537ddde4a8580524ee
+        url: https://boostorg.jfrog.io/artifactory/main/release/1.80.0/source/boost_1_80_0.tar.bz2
+        sha256: 1e19565d82e43bc59209a168f5ac899d3ba471d55c7610c677d4ccf2c9c500c0
 
   - name: coin
     buildsystem: cmake-ninja
@@ -217,15 +216,14 @@ modules:
   - name: pivy
     buildsystem: simple
     build-commands:
-      - python3 setup.py build
-      - python3 setup.py install --prefix=/app
+      - python3 setup.py install --prefix=/app --root=/
     build-options:
       env:
         PREFIX: /app
     sources:
       - type: archive
-        url: https://github.com/coin3d/pivy/archive/0.6.5.tar.gz
-        sha256: 16f2e339e5c59a6438266abe491013a20f53267e596850efad1559564a2c1719
+        url: https://github.com/coin3d/pivy/archive/0.6.8.tar.gz
+        sha256: c443dd7dd724b0bfa06427478b9d24d31e0c3b5138ac5741a2917a443b28f346
       - type: shell
         commands:
           - sed -i 's|QUIET|REQUIRED|g' CMakeLists.txt
@@ -694,6 +692,8 @@ modules:
       - -DCMAKE_BUILD_TYPE=RelWithDebInfo
       - -DCMAKE_INSTALL_PREFIX=/app/freecad
       - -DCMAKE_INSTALL_DATAROOTDIR=/app/share
+      # While redundant (this triggers a warning with the linter) removing this
+      # cause CMake to stop finding dependencies.
       - -DCMAKE_PREFIX_PATH=/app
       - -DBUILD_FLAT_MESH=ON
       - -DBUILD_QT5=ON
@@ -703,12 +703,12 @@ modules:
       arch:
         x86_64:
           config-opts:
-            - -DSHIBOKEN_LIBRARY=shiboken2.cpython-39-x86_64-linux-gnu
-            - -DPYSIDE_LIBRARY=pyside2.cpython-39-x86_64-linux-gnu
+            - -DSHIBOKEN_LIBRARY=shiboken2.cpython-310-x86_64-linux-gnu
+            - -DPYSIDE_LIBRARY=pyside2.cpython-310-x86_64-linux-gnu
         aarch64:
           config-opts:
-            - -DSHIBOKEN_LIBRARY=shiboken2.cpython-39-aarch64-linux-gnu
-            - -DPYSIDE_LIBRARY=pyside2.cpython-39-aarch64-linux-gnu
+            - -DSHIBOKEN_LIBRARY=shiboken2.cpython-310-aarch64-linux-gnu
+            - -DPYSIDE_LIBRARY=pyside2.cpython-310-aarch64-linux-gnu
     post-install:
       - install -Dm755 ../openscad.sh ${FLATPAK_DEST}/bin/openscad
       - ln -s /app/freecad/bin/FreeCADCmd /app/bin/FreeCADCmd
