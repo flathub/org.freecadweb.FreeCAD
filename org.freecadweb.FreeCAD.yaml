@@ -512,8 +512,8 @@ modules:
     sources:
       - type: git
         url: https://gitlab.com/blobfish/occt.git/
-        # branch: V7_6_2_BF
-        commit: f3f00c9e9487713be0c64f36c53590cc0f30e5a6
+        # branch: V7_6_3_BF
+        commit: 58aff2ce54c309ce0f5d4e9515bcb7243bc13c95
 
   # new deps for IfcOpenShell
   - name: mpfr
@@ -699,6 +699,7 @@ modules:
       - -DBUILD_QT5=ON
       - -DSHIBOKEN_INCLUDE_DIR=/app/include/shiboken2
       - -DPYSIDE_INCLUDE_DIR=/app/include/PySide2
+      - -DINSTALL_TO_SITEPACKAGES=ON
     build-options:
       arch:
         x86_64:
@@ -718,8 +719,8 @@ modules:
     sources:
       - type: git
         url: https://github.com/FreeCAD/FreeCAD.git
-        tag: '0.20.1'
-        commit: f5d13554ecc7a456fb6e970568ae5c74ba727563
+        tag: 0.20.2
+        commit: 930dd9a76203a3260b1e6256c70c1c3cad8c5cb8
       - type: file
         path: openscad.sh
       # we need this patch so that FreeCAD can find QAssistant
@@ -731,10 +732,13 @@ modules:
           # to obtain the revcount for a given gitRef (commit hash, branch or tag) run
           # echo $(($(curl -s 'https://api.github.com/repos/FreeCAD/FreeCAD/compare/120ca87015...'"$gitRef"'' | grep "ahead_by" | sed -s 's/ //g;s/"ahead_by"://;s/,//')+1))
           - |
-            revcount=29410
+            revcount=29603
             sed -i 's|${PACKAGE_WCREF}|'"$revcount"' (Git)|' src/Build/Version.h.cmake
             sed -i 's|@PACKAGE_VERSION@|@PACKAGE_VERSION@.'"$revcount"'|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
-          - sed -i 's|${PACKAGE_WCURL}|https://github.com/FreeCAD/FreeCAD.git|' src/Build/Version.h.cmake
-          - sed -i 's|/usr|/app|g' cMake/FindOCC.cmake src/Gui/GraphvizView.cpp
+            sed -i 's|${PACKAGE_WCURL}|https://github.com/FreeCAD/FreeCAD.git|' src/Build/Version.h.cmake
+          - | # fix paths for flatpak environment
+            sed -i 's|/usr|/app|g' cMake/FindOCC.cmake src/Gui/GraphvizView.cpp
+            sitepackagesDir=$(python3 -c 'import sysconfig; print(sysconfig.get_paths()["platlib"])' | sed 's|/usr|/app|')
+            sed -i 's|${python_libs}|'"$sitepackagesDir"'|' src/Ext/freecad/CMakeLists.txt
           # We need to properly set the icon name
           - sed -i 's|name="org.freecadweb.FreeCAD"|name="org.freecadweb.FreeCAD.application-x-extension-fcstd"|' src/XDGData/org.freecadweb.FreeCAD.xml
