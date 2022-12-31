@@ -51,8 +51,15 @@ modules:
       - /bin
     sources:
       - type: archive
+        only-arches:
+          - x86_64
         url: https://download.qt.io/official_releases/QtForPython/pyside2/PySide2-5.15.4-src/pyside-setup-opensource-src-5.15.4.tar.xz
         sha256: 3c68ed0def4111ef5d0641370306338d277ae8983a77eaf22f223ddd3a14450b
+      - type: archive
+        only-arches:
+          - aarch64
+        url: https://download.qt.io/official_releases/QtForPython/pyside2/PySide2-5.15.3-src/pyside-setup-opensource-src-5.15.3.tar.xz
+        sha256: 7ff5f1cc4291fffb6d5a3098b3090abe4d415da2adec740b4e901893d95d7137
       - type: patch
         path: patches/pyside-webengine.patch
       - type: shell
@@ -499,6 +506,11 @@ modules:
   - name: opencascade
     buildsystem: cmake-ninja
     builddir: true
+    build-options:
+        arch:
+            aarch64:
+                config-opts:
+                  - -DUSE_GLES2=ON
     config-opts:
       - -DCMAKE_BUILD_TYPE=RelWithDebInfo
       - -DUSE_FREEIMAGE=ON
@@ -726,6 +738,8 @@ modules:
       # we need this patch so that FreeCAD can find QAssistant
       - type: patch
         path: patches/freecad-assistant-path.patch
+      - type: patch
+        path: patches/freecad-gl.patch
       - type: shell
         commands:
           # revcount needs to be updated any time the source commit or tag is changed
