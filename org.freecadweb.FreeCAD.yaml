@@ -723,9 +723,6 @@ modules:
         commit: 930dd9a76203a3260b1e6256c70c1c3cad8c5cb8
       - type: file
         path: openscad.sh
-      # we need this patch so that FreeCAD can find QAssistant
-      - type: patch
-        path: patches/freecad-assistant-path.patch
       - type: shell
         commands:
           # revcount needs to be updated any time the source commit or tag is changed
