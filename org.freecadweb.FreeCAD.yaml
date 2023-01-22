@@ -20,12 +20,6 @@ finish-args:
   - --env=QTWEBENGINEPROCESS_PATH=/app/bin/QtWebEngineProcess
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.llvm14
-add-extensions:
-  org.freecadweb.FreeCAD.Manual:
-    directory: share/doc/FreeCAD
-    bundle: true
-    no-autodownload: true
-    autodelete: true
 cleanup:
   - /include
   - /share/aclocal
