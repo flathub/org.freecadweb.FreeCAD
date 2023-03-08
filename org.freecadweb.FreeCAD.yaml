@@ -735,16 +735,16 @@ modules:
     sources:
       - type: git
         url: https://github.com/FreeCAD/FreeCAD.git
-        commit: d13926baa856fd0466f0049bf5cc34c7f5c1e308
+        commit: 088f51632b37279b74be1cfcc1a94779734a53bd
       - type: file
         path: openscad.sh
       - type: shell
         commands:
           # revcount needs to be updated any time the source commit or tag is changed
           # to obtain the revcount for a given gitRef (commit hash, branch or tag) run
-          # echo $(($(curl -s 'https://api.github.com/repos/FreeCAD/FreeCAD/compare/120ca87015...'"$gitRef"'' | grep "ahead_by" | sed -s 's/ //g;s/"ahead_by"://;s/,//')+1))
+          # echo $(($(curl -s 'https://api.github.com/repos/FreeCAD/FreeCAD/compare/120ca87015...'"$gitRef"'' | grep '"ahead_by":' | sed -s 's/ //g;s/"ahead_by"://;s/,//')+1))
           - |
-            revcount=31979
+            revcount=32220
             sed -i 's|${PACKAGE_WCREF}|'"$revcount"' (Git)|' src/Build/Version.h.cmake
             sed -i 's|@PACKAGE_VERSION@|@PACKAGE_VERSION@.'"$revcount"'|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
             sed -i 's|${PACKAGE_WCURL}|https://github.com/FreeCAD/FreeCAD.git|' src/Build/Version.h.cmake
