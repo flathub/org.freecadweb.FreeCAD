@@ -364,15 +364,6 @@ modules:
         url: https://www.kernel.org/pub/software/scm/git/git-2.28.0.tar.gz
         sha256: f914c60a874d466c1e18467c864a910dd4ea22281ba6d4d58077cb0c3f115170
 
-  - name: GitPython
-    buildsystem: simple
-    build-commands:
-      - python3 setup.py install --prefix=/app --root=/
-    sources:
-      - type: archive
-        url: https://files.pythonhosted.org/packages/72/ad/5cf16fd1307e0ec17fc2347475e732f64d396649c64ed358a29186f4ce74/GitPython-3.1.9.tar.gz
-        sha256: a03f728b49ce9597a6655793207c6ab0da55519368ff5961e4a74ae475b9fa8e
-
   - name: gitdb
     buildsystem: simple
     build-commands:
