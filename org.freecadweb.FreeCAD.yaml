@@ -668,6 +668,17 @@ modules:
   - python3-pyyaml.json
   - python3-Pillow.json
 
+  # For the Arch workbench to generate Solar diagrams.
+  # https://github.com/flathub/org.freecadweb.FreeCAD/issues/114
+  - name: python3-pysolar
+    buildsystem: simple
+    build-commands:
+      - pip3 install --verbose --exists-action=i --no-index --find-links="file://${PWD}" --prefix=${FLATPAK_DEST} "pysolar" --no-build-isolation
+    sources:
+      - type: file
+        url: https://files.pythonhosted.org/packages/5e/74/c78d4ff1c8b9d1f718f57d58afa7125f1610b09005298afb1047081e952d/pysolar-0.10-py3-none-any.whl
+        sha256: 99aa506d4eba41a83308a6772779ffcafcbe8afa595e80b8eafb1ed85b561446
+
   # For add-on manager
   - name: python3-pip
     buildsystem: simple
