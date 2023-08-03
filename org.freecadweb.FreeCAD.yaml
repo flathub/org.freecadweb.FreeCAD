@@ -362,15 +362,6 @@ modules:
         url: https://www.kernel.org/pub/software/scm/git/git-2.28.0.tar.gz
         sha256: f914c60a874d466c1e18467c864a910dd4ea22281ba6d4d58077cb0c3f115170
 
-  - name: GitPython
-    buildsystem: simple
-    build-commands:
-      - python3 setup.py install --prefix=/app --root=/
-    sources:
-      - type: archive
-        url: https://files.pythonhosted.org/packages/72/ad/5cf16fd1307e0ec17fc2347475e732f64d396649c64ed358a29186f4ce74/GitPython-3.1.9.tar.gz
-        sha256: a03f728b49ce9597a6655793207c6ab0da55519368ff5961e4a74ae475b9fa8e
-
   - name: gitdb
     buildsystem: simple
     build-commands:
@@ -664,6 +655,16 @@ modules:
         url: https://files.pythonhosted.org/packages/a3/58/35da89ee790598a0700ea49b2a66594140f44dec458c07e8e3d4979137fc/ply-3.11-py2.py3-none-any.whl
         sha256: 096f9b8350b65ebd2fd1346b12452efe5b9607f7482813ffca50c22722a807ce
 
+  # For Path WB
+  - name: python3-packaging
+    buildsystem: simple
+    build-commands:
+      - pip3 install --exists-action=i --no-index --find-links="file://${PWD}" --prefix=${FLATPAK_DEST} packaging
+    sources:
+      - type: file
+        url: https://files.pythonhosted.org/packages/05/8e/8de486cbd03baba4deef4142bd643a3e7bbe954a784dc1bb17142572d127/packaging-21.3-py3-none-any.whl
+        sha256: ef103e05f519cdc783ae24ea4e2e0f508a9c99b2d4969652eed6a2e1ea5bd522
+
   # For the FEM workbench.
   - python3-pyyaml.json
   - python3-Pillow.json
@@ -690,6 +691,15 @@ modules:
         url: https://files.pythonhosted.org/packages/1f/2c/d9626f045e7b49a6225c6b09257861f24da78f4e5f23af2ddbdf852c99b8/pip-22.2.2-py3-none-any.whl
         sha256: b61a374b5bc40a6e982426aede40c9b5a08ff20e640f5b56977f4f91fed1e39a
 
+  - name: fmt
+    buildsystem: cmake-ninja
+    config-opts:
+      - -DBUILD_SHARED_LIBS=ON
+    sources:
+      - type: git
+        url: https://github.com/fmtlib/fmt.git
+        commit: a33701196adfad74917046096bf5a2aa0ab0bb50 # tag 9.1.0
+  
   - name: FreeCAD
     buildsystem: cmake-ninja
     builddir: true
@@ -724,8 +734,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/FreeCAD/FreeCAD.git
-        tag: 0.20.2
-        commit: 930dd9a76203a3260b1e6256c70c1c3cad8c5cb8
+        commit: 41b058e2087de60dc8fef3d3e68c7d0129e13abf   # tag 0.21.0
       - type: patch
         path: patches/OpenSCAD_transfermechanism.patch
       - type: file
@@ -734,9 +743,9 @@ modules:
         commands:
           # revcount needs to be updated any time the source commit or tag is changed
           # to obtain the revcount for a given gitRef (commit hash, branch or tag) run
-          # echo $(($(curl -s 'https://api.github.com/repos/FreeCAD/FreeCAD/compare/120ca87015...'"$gitRef"'' | grep "ahead_by" | sed -s 's/ //g;s/"ahead_by"://;s/,//')+1))
+          # echo $(($(curl -s 'https://api.github.com/repos/FreeCAD/FreeCAD/compare/120ca87015...'"$gitRef"'' | grep '"ahead_by":' | sed -s 's/ //g;s/"ahead_by"://;s/,//')+1))
           - |
-            revcount=29603
+            revcount=33675
             sed -i 's|${PACKAGE_WCREF}|'"$revcount"' (Git)|' src/Build/Version.h.cmake
             sed -i 's|@PACKAGE_VERSION@|@PACKAGE_VERSION@.'"$revcount"'|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
             sed -i 's|${PACKAGE_WCURL}|https://github.com/FreeCAD/FreeCAD.git|' src/Build/Version.h.cmake

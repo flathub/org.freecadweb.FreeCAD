@@ -1,5 +1,5 @@
 diff --git a/src/Mod/OpenSCAD/InitGui.py b/src/Mod/OpenSCAD/InitGui.py
-index b67c806da5..6dbbfcc69f 100644
+index 0be1364ea9..61dbed05b1 100644
 --- a/src/Mod/OpenSCAD/InitGui.py
 +++ b/src/Mod/OpenSCAD/InitGui.py
 @@ -118,7 +118,7 @@ class OpenSCADWorkbench(Workbench):
@@ -8,11 +8,11 @@ index b67c806da5..6dbbfcc69f 100644
  
 -        transferMechanism = param.GetInt("transfermechanism", 0)
 +        transferMechanism = param.GetInt("transfermechanism", 2)
-         if openscadfilename and transferMechanism == 0:  
+         if openscadfilename and transferMechanism == 0:
              # We are using the Python temp-directory creation function
              if "snap" in openscadfilename:
 diff --git a/src/Mod/OpenSCAD/OpenSCADTest/app/test_importCSG.py b/src/Mod/OpenSCAD/OpenSCADTest/app/test_importCSG.py
-index 3edd93db26..371e220bc2 100644
+index ffe197c8e9..536d79b9bf 100644
 --- a/src/Mod/OpenSCAD/OpenSCADTest/app/test_importCSG.py
 +++ b/src/Mod/OpenSCAD/OpenSCADTest/app/test_importCSG.py
 @@ -273,7 +273,7 @@ polyhedron(
@@ -25,10 +25,10 @@ index 3edd93db26..371e220bc2 100644
              print ("Cannot test STL import, communication with OpenSCAD is via pipes")
              print ("If either OpenSCAD or FreeCAD are installed as sandboxed packages,")
 diff --git a/src/Mod/OpenSCAD/OpenSCADUtils.py b/src/Mod/OpenSCAD/OpenSCADUtils.py
-index 5ed6710f56..1e5e0f34e1 100644
+index 36bf78a220..0afbeff26c 100644
 --- a/src/Mod/OpenSCAD/OpenSCADUtils.py
 +++ b/src/Mod/OpenSCAD/OpenSCADUtils.py
-@@ -189,7 +189,7 @@ def callopenscad(inputfilename,outputfilename=None, outputext='csg', keepname=Fa
+@@ -160,7 +160,7 @@ def callopenscad(inputfilename,outputfilename=None, outputext='csg', keepname=Fa
  
      preferences = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/OpenSCAD")
      osfilename = preferences.GetString('openscadexecutable')
