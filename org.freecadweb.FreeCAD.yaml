@@ -182,6 +182,15 @@ modules:
         url: https://boostorg.jfrog.io/artifactory/main/release/1.80.0/source/boost_1_80_0.tar.bz2
         sha256: 1e19565d82e43bc59209a168f5ac899d3ba471d55c7610c677d4ccf2c9c500c0
 
+  - name: opencamlib
+    buildsystem: simple
+    build-commands:
+      - python3 setup.py install --prefix=/app --root=/
+    sources:
+      - type: file
+        url: https://github.com/aewallin/opencamlib/archive/2023.01.11.tar.gz
+        sha256: 07fd9b61c39c4d600e441d67edbafc1015e9e3fabd88b561a647f98fedf31d41
+
   - name: coin
     buildsystem: cmake-ninja
     builddir: true
