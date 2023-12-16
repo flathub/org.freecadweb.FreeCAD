@@ -19,7 +19,7 @@ finish-args:
   - --env=SPNAV_SOCKET=/run/spnav.sock
   - --env=QTWEBENGINEPROCESS_PATH=/app/bin/QtWebEngineProcess
 sdk-extensions:
-  - org.freedesktop.Sdk.Extension.llvm15
+  - org.freedesktop.Sdk.Extension.llvm17
 cleanup:
   - /include
   - /share/aclocal
