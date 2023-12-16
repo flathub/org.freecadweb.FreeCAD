@@ -1,8 +1,8 @@
 app-id: org.freecadweb.FreeCAD
 base: io.qt.qtwebengine.BaseApp
-base-version: '5.15-22.08'
+base-version: '5.15-23.08'
 runtime: org.kde.Platform
-runtime-version: '5.15-22.08'
+runtime-version: '5.15-23.08'
 sdk: org.kde.Sdk
 command: FreeCAD
 finish-args:
@@ -19,7 +19,7 @@ finish-args:
   - --env=SPNAV_SOCKET=/run/spnav.sock
   - --env=QTWEBENGINEPROCESS_PATH=/app/bin/QtWebEngineProcess
 sdk-extensions:
-  - org.freedesktop.Sdk.Extension.llvm14
+  - org.freedesktop.Sdk.Extension.llvm17
 cleanup:
   - /include
   - /share/aclocal
