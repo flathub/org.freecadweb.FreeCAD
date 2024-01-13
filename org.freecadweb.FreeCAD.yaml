@@ -1,8 +1,8 @@
 app-id: org.freecadweb.FreeCAD
 base: io.qt.qtwebengine.BaseApp
-base-version: '5.15-22.08'
+base-version: '5.15-23.08'
 runtime: org.kde.Platform
-runtime-version: '5.15-22.08'
+runtime-version: '5.15-23.08'
 sdk: org.kde.Sdk
 command: FreeCAD
 finish-args:
@@ -19,7 +19,7 @@ finish-args:
   - --env=SPNAV_SOCKET=/run/spnav.sock
   - --env=QTWEBENGINEPROCESS_PATH=/app/bin/QtWebEngineProcess
 sdk-extensions:
-  - org.freedesktop.Sdk.Extension.llvm14
+  - org.freedesktop.Sdk.Extension.llvm15
 cleanup:
   - /include
   - /share/aclocal
@@ -36,8 +36,8 @@ modules:
     buildsystem: cmake-ninja
     builddir: true
     build-options:
-      prepend-path: /usr/lib/sdk/llvm14/bin
-      prepend-ld-library-path: /usr/lib/sdk/llvm14/lib
+      prepend-path: /usr/lib/sdk/llvm15/bin
+      prepend-ld-library-path: /usr/lib/sdk/llvm15/lib
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
       - -DBUILD_TESTS=OFF
@@ -45,8 +45,8 @@ modules:
       - /bin
     sources:
       - type: archive
-        url: https://download.qt.io/official_releases/QtForPython/pyside2/PySide2-5.15.4-src/pyside-setup-opensource-src-5.15.4.tar.xz
-        sha256: 3c68ed0def4111ef5d0641370306338d277ae8983a77eaf22f223ddd3a14450b
+        url: https://download.qt.io/official_releases/QtForPython/pyside2/PySide2-5.15.11-src/pyside-setup-opensource-src-5.15.11.tar.xz
+        sha256: da567cd3b7854d27a0b4afe3e89de8b2f98b7a6d57393be56f1fc13f770faf29
       - type: patch
         path: patches/pyside-webengine.patch
       - type: shell
@@ -229,8 +229,8 @@ modules:
       - python3 setup.py install --prefix=/app --root=/
     sources:
       - type: archive
-        url: https://files.pythonhosted.org/packages/59/e3/78c921adf4423fff68da327cc91b73a16c63f29752efe7beb6b88b6dd79d/Cython-0.29.24.tar.gz
-        sha256: cdf04d07c3600860e8c2ebaad4e8f52ac3feb212453c1764a49ac08c827e8443
+        url: https://files.pythonhosted.org/packages/2a/97/8cc3fe7c6de4796921236a64d00ca8a95565772e57f0d3caae68d880b592/Cython-0.29.37.tar.gz
+        sha256: f813d4a6dd94adee5d4ff266191d1d95bf6d4164a4facc535422c021b2504cfb
 
   - name: numpy
     buildsystem: simple
@@ -242,8 +242,8 @@ modules:
       - /lib/python3.*/site-packages/numpy/*/tests
     sources:
       - type: archive
-        url: https://files.pythonhosted.org/packages/fb/48/b0708ebd7718a8933f0d3937513ef8ef2f4f04529f1f66ca86d873043921/numpy-1.21.4.zip
-        sha256: e6c76a87633aa3fa16614b61ccedfae45b91df2767cf097aa9c933932a7ed1e0
+        url: https://files.pythonhosted.org/packages/d0/b0/13e2b50c95bfc1d5ee04925eb5c105726c838f922d0aaddd57b7c8be0f8b/numpy-1.26.3.tar.gz
+        sha256: 697df43e2b6310ecc9d95f05d5ef20eacc09c7c4ecc9da3f235d39e71b7da1e4
 
   - name: certifi
     buildsystem: simple
@@ -442,6 +442,8 @@ modules:
       - type: archive
         url: https://github.com/oneapi-src/oneTBB/archive/refs/tags/2019_U9.tar.gz
         sha256: 3f5ea81b9caa195f1967a599036b473b2e7c347117330cda99b79cfcf5b77c84
+      - type: patch
+        path: patches/tbb-gcc13.patch
 
   - name: VTK
     buildsystem: cmake-ninja
@@ -645,6 +647,8 @@ modules:
       - type: archive
         url: https://gmsh.info/src/gmsh-4.9.5-source.tgz
         sha256: ffd64900844208719c88d91a66c281889023132b7a9e282c51548cb9f6f3ad44
+      - type: patch
+        path: patches/gmsh-stdint.patch
 
   - name: python3-ply
     buildsystem: simple
@@ -719,12 +723,12 @@ modules:
       arch:
         x86_64:
           config-opts:
-            - -DSHIBOKEN_LIBRARY=shiboken2.cpython-310-x86_64-linux-gnu
-            - -DPYSIDE_LIBRARY=pyside2.cpython-310-x86_64-linux-gnu
+            - -DSHIBOKEN_LIBRARY=shiboken2.cpython-311-x86_64-linux-gnu
+            - -DPYSIDE_LIBRARY=pyside2.cpython-311-x86_64-linux-gnu
         aarch64:
           config-opts:
-            - -DSHIBOKEN_LIBRARY=shiboken2.cpython-310-aarch64-linux-gnu
-            - -DPYSIDE_LIBRARY=pyside2.cpython-310-aarch64-linux-gnu
+            - -DSHIBOKEN_LIBRARY=shiboken2.cpython-311-aarch64-linux-gnu
+            - -DPYSIDE_LIBRARY=pyside2.cpython-311-aarch64-linux-gnu
     post-install:
       - install -Dm755 ../openscad.sh ${FLATPAK_DEST}/bin/openscad
       - ln -s /app/freecad/bin/FreeCADCmd /app/bin/FreeCADCmd
