@@ -176,7 +176,7 @@ modules:
     buildsystem: simple
     build-commands:
       - ./bootstrap.sh --prefix=/app --with-libraries=filesystem,program_options,regex,system,thread,python,date_time,chrono,atomic --with-python=/usr/bin/python3
-      - ./b2 install cxxflags="-I/usr/include/python3.10" -j $FLATPAK_BUILDER_N_JOBS
+      - ./b2 install cxxflags="-I/usr/include/python3.11" -j $FLATPAK_BUILDER_N_JOBS
     sources:
       - type: archive
         url: https://boostorg.jfrog.io/artifactory/main/release/1.80.0/source/boost_1_80_0.tar.bz2
