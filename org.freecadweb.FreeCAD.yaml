@@ -242,8 +242,8 @@ modules:
       - /lib/python3.*/site-packages/numpy/*/tests
     sources:
       - type: archive
-        url: https://files.pythonhosted.org/packages/d0/b0/13e2b50c95bfc1d5ee04925eb5c105726c838f922d0aaddd57b7c8be0f8b/numpy-1.26.3.tar.gz
-        sha256: 697df43e2b6310ecc9d95f05d5ef20eacc09c7c4ecc9da3f235d39e71b7da1e4
+        url: https://files.pythonhosted.org/packages/a4/9b/027bec52c633f6556dba6b722d9a0befb40498b9ceddd29cbe67a45a127c/numpy-1.24.4.tar.gz
+        sha256: 80f5e3a4e498641401868df4208b74581206afbee7cf7b8329daae82676d9463
 
   - name: certifi
     buildsystem: simple
