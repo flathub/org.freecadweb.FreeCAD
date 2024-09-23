@@ -1,3 +1,5 @@
 {
-  "only-arches": ["x86_64"]
+  "only-arches": ["x86_64"],
+  "end-of-life": "Application has been renamed to org.freecad.FreeCAD",
+  "end-of-life-rebase": "org.freecad.FreeCAD"
 }
