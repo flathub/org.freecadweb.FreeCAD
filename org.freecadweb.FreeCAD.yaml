@@ -1,9 +1,9 @@
 app-id: org.freecadweb.FreeCAD
 default-branch: beta
 base: io.qt.qtwebengine.BaseApp
-base-version: '5.15-22.08'
+base-version: '5.15-23.08'
 runtime: org.kde.Platform
-runtime-version: '5.15-22.08'
+runtime-version: '5.15-23.08'
 sdk: org.kde.Sdk
 command: FreeCAD
 desktop-file-name-prefix: "(beta) "
@@ -21,7 +21,7 @@ finish-args:
   - --env=SPNAV_SOCKET=/run/spnav.sock
   - --env=QTWEBENGINEPROCESS_PATH=/app/bin/QtWebEngineProcess
 sdk-extensions:
-  - org.freedesktop.Sdk.Extension.llvm14
+  - org.freedesktop.Sdk.Extension.llvm15
 cleanup:
   - /include
   - /share/aclocal
@@ -38,8 +38,8 @@ modules:
     buildsystem: cmake-ninja
     builddir: true
     build-options:
-      prepend-path: /usr/lib/sdk/llvm14/bin
-      prepend-ld-library-path: /usr/lib/sdk/llvm14/lib
+      prepend-path: /usr/lib/sdk/llvm15/bin
+      prepend-ld-library-path: /usr/lib/sdk/llvm15/lib
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
       - -DBUILD_TESTS=OFF
@@ -47,8 +47,8 @@ modules:
       - /bin
     sources:
       - type: archive
-        url: https://download.qt.io/official_releases/QtForPython/pyside2/PySide2-5.15.4-src/pyside-setup-opensource-src-5.15.4.tar.xz
-        sha256: 3c68ed0def4111ef5d0641370306338d277ae8983a77eaf22f223ddd3a14450b
+        url: https://download.qt.io/official_releases/QtForPython/pyside2/PySide2-5.15.11-src/pyside-setup-opensource-src-5.15.11.tar.xz
+        sha256: da567cd3b7854d27a0b4afe3e89de8b2f98b7a6d57393be56f1fc13f770faf29
       - type: patch
         path: patches/pyside-webengine.patch
       - type: shell
@@ -184,7 +184,7 @@ modules:
     buildsystem: simple
     build-commands:
       - ./bootstrap.sh --prefix=/app --with-libraries=filesystem,program_options,regex,system,thread,python,date_time,chrono,atomic --with-python=/usr/bin/python3
-      - ./b2 install cxxflags="-I/usr/include/python3.10" -j $FLATPAK_BUILDER_N_JOBS
+      - ./b2 install cxxflags="-I/usr/include/python3.11" -j $FLATPAK_BUILDER_N_JOBS
     sources:
       - type: archive
         url: https://boostorg.jfrog.io/artifactory/main/release/1.80.0/source/boost_1_80_0.tar.bz2
