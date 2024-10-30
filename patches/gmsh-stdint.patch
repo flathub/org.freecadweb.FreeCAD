@@ -1,0 +1,36 @@
+diff --git a/contrib/QuadMeshingTools/qmtMeshGeometryOptimization.cpp b/contrib/QuadMeshingTools/qmtMeshGeometryOptimization.cpp
+index 38839d4..b2b8782 100644
+--- a/contrib/QuadMeshingTools/qmtMeshGeometryOptimization.cpp
++++ b/contrib/QuadMeshingTools/qmtMeshGeometryOptimization.cpp
+@@ -9,6 +9,7 @@
+ 
+ /* System includes */
+ #include <queue>
++#include <stdint.h>
+ 
+ /* Gmsh includes */
+ #include "GmshMessage.h"
+diff --git a/contrib/QuadMeshingTools/qmtMeshGeometryOptimization.h b/contrib/QuadMeshingTools/qmtMeshGeometryOptimization.h
+index d4f5e81..4abaaf5 100644
+--- a/contrib/QuadMeshingTools/qmtMeshGeometryOptimization.h
++++ b/contrib/QuadMeshingTools/qmtMeshGeometryOptimization.h
+@@ -8,6 +8,7 @@
+ #pragma once
+ 
+ #include <float.h>
++#include <stdint.h>
+ #include "qmtMeshUtils.h"
+ 
+ class SurfaceProjector;
+diff --git a/src/mesh/meshGFacePack.cpp b/src/mesh/meshGFacePack.cpp
+index cffc059..7b0b206 100644
+--- a/src/mesh/meshGFacePack.cpp
++++ b/src/mesh/meshGFacePack.cpp
+@@ -5,6 +5,7 @@
+ 
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <stdint.h>
+ #include <queue>
+ #include <map>
+ #include <vector>
