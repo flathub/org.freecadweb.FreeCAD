@@ -187,8 +187,8 @@ modules:
       - ./b2 install cxxflags="-I/usr/include/python3.11" -j $FLATPAK_BUILDER_N_JOBS
     sources:
       - type: archive
-        url: https://boostorg.jfrog.io/artifactory/main/release/1.80.0/source/boost_1_80_0.tar.bz2
-        sha256: 1e19565d82e43bc59209a168f5ac899d3ba471d55c7610c677d4ccf2c9c500c0
+        url: https://boostorg.jfrog.io/artifactory/main/release/1.81.0/source/boost_1_81_0.tar.bz2
+        sha256: 71feeed900fbccca04a3b4f2f84a7c217186f28a940ed8b7ed4725986baf99fa
 
   - name: coin
     buildsystem: cmake-ninja
@@ -237,8 +237,8 @@ modules:
       - python3 setup.py install --prefix=/app --root=/
     sources:
       - type: archive
-        url: https://files.pythonhosted.org/packages/59/e3/78c921adf4423fff68da327cc91b73a16c63f29752efe7beb6b88b6dd79d/Cython-0.29.24.tar.gz
-        sha256: cdf04d07c3600860e8c2ebaad4e8f52ac3feb212453c1764a49ac08c827e8443
+        url: https://files.pythonhosted.org/packages/2a/97/8cc3fe7c6de4796921236a64d00ca8a95565772e57f0d3caae68d880b592/Cython-0.29.37.tar.gz
+        sha256: f813d4a6dd94adee5d4ff266191d1d95bf6d4164a4facc535422c021b2504cfb
 
   - name: numpy
     buildsystem: simple
@@ -250,8 +250,8 @@ modules:
       - /lib/python3.*/site-packages/numpy/*/tests
     sources:
       - type: archive
-        url: https://files.pythonhosted.org/packages/fb/48/b0708ebd7718a8933f0d3937513ef8ef2f4f04529f1f66ca86d873043921/numpy-1.21.4.zip
-        sha256: e6c76a87633aa3fa16614b61ccedfae45b91df2767cf097aa9c933932a7ed1e0
+        url: https://files.pythonhosted.org/packages/a4/9b/027bec52c633f6556dba6b722d9a0befb40498b9ceddd29cbe67a45a127c/numpy-1.24.4.tar.gz
+        sha256: 80f5e3a4e498641401868df4208b74581206afbee7cf7b8329daae82676d9463
 
   - name: certifi
     buildsystem: simple
@@ -437,14 +437,19 @@ modules:
           - sed -i 's/-o root -g root //g' Makefile.{gnu,fip}
 
   - name: tbb
-    buildsystem: cmake-ninja
-    config-opts:
-      - -DTBB_STRICT=OFF
-      - -DCMAKE_BUILD_TYPE=Release
+    buildsystem: simple
+    build-commands:
+      - make -j $FLATPAK_BUILDER_N_JOBS
+      - install -d /app/lib
+      - install -m755 build/linux_*/*.so* /app/lib
+      - install -d /app/include
+      - cp -a include/tbb /app/include
     sources:
       - type: archive
-        url: https://github.com/oneapi-src/oneTBB/archive/refs/tags/v2021.9.0.tar.gz
-        sha256: 1ce48f34dada7837f510735ff1172f6e2c261b09460e3bf773b49791d247d24e
+        url: https://github.com/oneapi-src/oneTBB/archive/refs/tags/2019_U9.tar.gz
+        sha256: 3f5ea81b9caa195f1967a599036b473b2e7c347117330cda99b79cfcf5b77c84
+      - type: patch
+        path: patches/tbb-gcc13.patch
 
   - name: VTK
     buildsystem: cmake-ninja
@@ -500,8 +505,8 @@ modules:
     sources:
       - type: git
         url: https://gitlab.com/blobfish/occt.git/
-        # branch: V7_7_1_BF
-        commit: 1aa431e90bbe8274fa2037304cb18ae08ba10c19
+        # branch: V7_6_3_BF
+        commit: 58aff2ce54c309ce0f5d4e9515bcb7243bc13c95
 
   # new deps for IfcOpenShell
   - name: mpfr
@@ -648,6 +653,8 @@ modules:
       - type: archive
         url: https://gmsh.info/src/gmsh-4.9.5-source.tgz
         sha256: ffd64900844208719c88d91a66c281889023132b7a9e282c51548cb9f6f3ad44
+      - type: patch
+        path: patches/gmsh-stdint.patch
 
   - name: python3-ply
     buildsystem: simple
@@ -722,12 +729,12 @@ modules:
       arch:
         x86_64:
           config-opts:
-            - -DSHIBOKEN_LIBRARY=shiboken2.cpython-310-x86_64-linux-gnu
-            - -DPYSIDE_LIBRARY=pyside2.cpython-310-x86_64-linux-gnu
+            - -DSHIBOKEN_LIBRARY=shiboken2.cpython-311-x86_64-linux-gnu
+            - -DPYSIDE_LIBRARY=pyside2.cpython-311-x86_64-linux-gnu
         aarch64:
           config-opts:
-            - -DSHIBOKEN_LIBRARY=shiboken2.cpython-310-aarch64-linux-gnu
-            - -DPYSIDE_LIBRARY=pyside2.cpython-310-aarch64-linux-gnu
+            - -DSHIBOKEN_LIBRARY=shiboken2.cpython-311-aarch64-linux-gnu
+            - -DPYSIDE_LIBRARY=pyside2.cpython-311-aarch64-linux-gnu
     post-install:
       - install -Dm755 ../openscad.sh ${FLATPAK_DEST}/bin/openscad
       - ln -s /app/freecad/bin/FreeCADCmd /app/bin/FreeCADCmd
@@ -737,7 +744,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/FreeCAD/FreeCAD.git
-        commit: 1580fe7c9696654803a93da8cf372f75e75149fa
+        commit: b9bfa5c5507506e4515816414cd27f4851d00489   # tag 0.21.2
       - type: patch
         path: patches/OpenSCAD_transfermechanism.patch
       - type: file
@@ -748,7 +755,7 @@ modules:
           # to obtain the revcount for a given gitRef (commit hash, branch or tag) run
           # echo $(($(curl -s 'https://api.github.com/repos/FreeCAD/FreeCAD/compare/120ca87015...'"$gitRef"'' | grep '"ahead_by":' | sed -s 's/ //g;s/"ahead_by"://;s/,//')+1))
           - |
-            revcount=33639
+            revcount=33771
             sed -i 's|${PACKAGE_WCREF}|'"$revcount"' (Git)|' src/Build/Version.h.cmake
             sed -i 's|@PACKAGE_VERSION@|@PACKAGE_VERSION@.'"$revcount"'|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
             sed -i 's|${PACKAGE_WCURL}|https://github.com/FreeCAD/FreeCAD.git|' src/Build/Version.h.cmake
