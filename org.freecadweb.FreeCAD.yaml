@@ -146,12 +146,18 @@ modules:
     builddir: true
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
+      - -DALLOW_UNSUPPORTED=ON
+      - -DHDF5_BUILD_HL_LIB=ON
+      - -DHDF5_BUILD_CPP_LIB=ON
+      - -DHDF5_ENABLE_PARALLEL=ON
+      - -DHDF5_ENABLE_Z_LIB_SUPPORT=ON
     cleanup:
       - /bin
+      - /cmake
     sources:
       - type: archive
-        url: https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8/hdf5-1.8.21/src/hdf5-1.8.21.tar.bz2
-        sha256: e5b1b1dee44a64b795a91c3321ab7196d9e0871fe50d42969761794e3899f40d
+        url: https://github.com/HDFGroup/hdf5/archive/hdf5-1_12_3.tar.gz
+        sha256: 39e2e3e25f2263f2dc3370556c174952675d7ac51c4d6f7d4f5e8b3a8bd10ac6
 
   - name: med
     buildsystem: cmake-ninja
@@ -163,8 +169,8 @@ modules:
       - /share/doc
     sources:
       - type: archive
-        url: http://files.salome-platform.org/Salome/other/med-3.3.1.tar.gz
-        sha256: dd631ef813838bc7413ff0dd6461d7a0d725bcfababdf772ece67610a8d22588
+        url: https://github.com/chennes/med/archive/refs/tags/v5.0.0.tar.gz
+        sha256: 8701f142087b87e8b74958fd0432498eadf28011b20ad05cf56bf911be081888
 
   - name: libspnav
     sources:
@@ -401,10 +407,8 @@ modules:
       - /bin
     sources:
       - type: archive
-        url: https://www.unidata.ucar.edu/downloads/netcdf/ftp/netcdf-4.6.1.tar.gz
-        sha256: 89c7957458740b763ae828c345240b8a1d29c2c1fed0f065f99b73181b0b2642
-        mirror-urls:
-          - https://www.gfd-dennou.org/library/netcdf/unidata-mirror/netcdf-4.6.1.tar.gz
+        url: https://downloads.unidata.ucar.edu/netcdf-c/4.9.2/netcdf-c-4.9.2.tar.gz
+        sha256: cf11babbbdb9963f09f55079e0b019f6d0371f52f8e1264a5ba8e9fdab1a6c48
 
   - name: freeimage
     buildsystem: simple
